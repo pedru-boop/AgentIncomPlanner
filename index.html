@@ -18,11 +18,18 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #EEF6FB; }
-  body { font-family: 'Noto Sans Thai', -apple-system, 'Segoe UI', system-ui, sans-serif; }
+  html, body { margin: 0; padding: 0; background: #E6EEF4; }
+  body { font-family: 'Mali', 'Noto Sans Thai', -apple-system, system-ui, sans-serif; font-weight: 500; }
+  input, select, button { font-family: inherit; }
+  .dash { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; align-items: start; }
+  .goalgrid { display: grid; grid-template-columns: 1fr; gap: 14px; align-items: center; }
+  @media (min-width: 860px) { .dash { grid-template-columns: 1.1fr 1fr; } .goalgrid { grid-template-columns: 1.2fr 1fr; } }
+  .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 12px; border-radius: 8px; outline: none; margin: 12px 0 4px; }
+  .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 4px solid #002D62; box-shadow: 0 2px 6px rgba(0,0,0,0.25); cursor: pointer; }
+  .slider::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 4px solid #002D62; cursor: pointer; }
   input[type=text]::placeholder { color: #9AAFC0; }
   button { font-family: inherit; }
   #root:empty::before {
@@ -173,8 +180,8 @@ function BarChart({ width, height, data, children }) {
                     React.createElement("text", { x: cx, y: padding.top + plotH + 18, fontSize: (xAxis.tick && xAxis.tick.fontSize) || 11, fill: (xAxis.tick && xAxis.tick.fill) || "#1B3A56", textAnchor: "middle" }, d[xAxis.dataKey]),
                     React.createElement("rect", { x: padding.left + gi * groupW, y: padding.top, width: groupW, height: plotH, fill: "transparent" })));
             })),
-        hover !== null && (React.createElement("div", { style: { position: "absolute", left: Math.min(padding.left + hover * groupW + groupW / 2, width - 160), top: 6, background: "#fff", border: "1px solid #DCE9F0", borderRadius: 8, padding: "6px 10px", fontSize: 11.5, boxShadow: "0 3px 10px rgba(0,45,98,0.12)", maxWidth: 170, lineHeight: 1.5, pointerEvents: "none" } },
-            React.createElement("div", { style: { fontWeight: 800, color: "#002D62", marginBottom: 2, fontSize: 12 } }, data[hover][xAxis.dataKey]),
+        hover !== null && (React.createElement("div", { style: { position: "absolute", left: Math.min(padding.left + hover * groupW + groupW / 2, width - 160), top: 6, background: "#fff", border: "1px solid #DCE9F0", borderRadius: 8, padding: "6px 10px", fontSize: 15, boxShadow: "0 3px 10px rgba(0,45,98,0.12)", maxWidth: 170, lineHeight: 1.5, pointerEvents: "none" } },
+            React.createElement("div", { style: { fontWeight: 800, color: "#002D62", marginBottom: 2, fontSize: 15 } }, data[hover][xAxis.dataKey]),
             bars.map((b, i) => {
                 const v = data[hover][b.dataKey] || 0;
                 if (v <= 0)
@@ -183,7 +190,7 @@ function BarChart({ width, height, data, children }) {
                     React.createElement("span", null, b.dataKey),
                     React.createElement("span", null, fmtTHB(v)));
             }))),
-        React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", marginTop: 4 } }, bars.map((b, i) => (React.createElement("div", { key: i, style: { display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#1B3A56" } },
+        React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", marginTop: 4 } }, bars.map((b, i) => (React.createElement("div", { key: i, style: { display: "flex", alignItems: "center", gap: 4, fontSize: 15, color: "#1B3A56" } },
             React.createElement("span", { style: { width: 10, height: 10, borderRadius: 2, background: b.fill, display: "inline-block" } }),
             b.dataKey))))));
 }
@@ -231,8 +238,8 @@ function LineChart({ width, height, data, children }) {
             hover !== null && (React.createElement("g", null,
                 React.createElement("line", { x1: points[hover][0], x2: points[hover][0], y1: padding.top, y2: padding.top + plotH, stroke: "#B9D3E2", strokeWidth: "1" }),
                 React.createElement("circle", { cx: points[hover][0], cy: points[hover][1], r: 4, fill: line.stroke || "#5E9B22" })))),
-        hover !== null && (React.createElement("div", { style: { position: "absolute", left: Math.min(Math.max(points[hover][0] - 70, 0), width - 150), top: 6, background: "#fff", border: "1px solid #DCE9F0", borderRadius: 8, padding: "6px 10px", fontSize: 11.5, boxShadow: "0 3px 10px rgba(0,45,98,0.12)", pointerEvents: "none" } },
-            React.createElement("div", { style: { fontWeight: 800, color: "#002D62", marginBottom: 2, fontSize: 12 } }, data[hover][xAxis.dataKey]),
+        hover !== null && (React.createElement("div", { style: { position: "absolute", left: Math.min(Math.max(points[hover][0] - 70, 0), width - 150), top: 6, background: "#fff", border: "1px solid #DCE9F0", borderRadius: 8, padding: "6px 10px", fontSize: 15, boxShadow: "0 3px 10px rgba(0,45,98,0.12)", pointerEvents: "none" } },
+            React.createElement("div", { style: { fontWeight: 800, color: "#002D62", marginBottom: 2, fontSize: 15 } }, data[hover][xAxis.dataKey]),
             React.createElement("div", { style: { color: line.stroke || "#5E9B22", fontWeight: 700 } },
                 fmtTHB(data[hover][line.dataKey] || 0),
                 " \u0E1A\u0E32\u0E17")))));
@@ -557,7 +564,7 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, other, onOther,
     const qData = quarters.map((q, qi) => {
         const ms = rows.slice(qi * 3, qi * 3 + 3);
         const comm = ms.reduce((s, r) => s + r.total, 0);
-        const oth = other[(calYear - 1) * 4 + qi] || 0;
+        const oth = 0;
         const yearEnd = qi === 3 ? ab.net + ab.collectBonus + career.benefit + (ab.qualReward || 0) : 0;
         const join = (ab.joinQ && ab.joinQ[qi]) || 0;
         return { q, ms, comm, oth, yearEnd, join, total: comm + q.bonus + oth + yearEnd + join };
@@ -565,7 +572,7 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, other, onOther,
     const yearTotal = qData.reduce((s, x) => s + x.total, 0);
     const line = (label, v, opt = {}) => React.createElement("tr", { style: { borderTop: "1px solid #EEF4F8", background: opt.bg } },
         React.createElement("td", { colSpan: 3, style: { padding: "6px 6px", color: opt.color || MUTE, fontWeight: opt.bold ? 800 : 600 } }, label,
-            opt.note && React.createElement("div", { style: { fontSize: 13.5, fontWeight: 500, color: opt.noteColor || MUTE } }, opt.note)),
+            opt.note && React.createElement("div", { style: { fontSize: 15, fontWeight: 500, color: opt.noteColor || MUTE } }, opt.note)),
         React.createElement("td", { style: { ...td, fontWeight: 800, color: opt.color || (v > 0 ? INK : "#4E6B84") } }, v > 0 ? THB(v) : "-"));
     return React.createElement("div", { style: { border: "1px solid #DCE9F0", borderRadius: 12, overflow: "hidden", marginBottom: 10 } },
         React.createElement("button", { onClick: () => setOpen(!open), style: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", background: PAPER, border: "none", cursor: "pointer", font: "inherit" } },
@@ -573,17 +580,17 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, other, onOther,
                 React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 21 } }, `ปีที่ ${calYear}`),
                 React.createElement("div", { style: { fontSize: 17, color: MUTE, marginTop: 2 } }, `รวมทั้งปี ${THB(yearTotal)} บาท`),
                 React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap", marginTop: 6 } },
-                    qData.map((x, i) => React.createElement("span", { key: i, style: { fontSize: 14, background: "#fff", border: "1px solid #DCE9F0", borderRadius: 8, padding: "2px 7px", color: NAVY, fontWeight: 700 } }, `Q${i + 1} ${THB(x.total)}`)))),
+                    qData.map((x, i) => React.createElement("span", { key: i, style: { fontSize: 15, background: "#fff", border: "1px solid #DCE9F0", borderRadius: 8, padding: "2px 7px", color: NAVY, fontWeight: 700 } }, `Q${i + 1} ${THB(x.total)}`)))),
             open ? React.createElement(ChevronUp, { size: 18, color: NAVY }) : React.createElement(ChevronDown, { size: 18, color: NAVY })),
         open && React.createElement("div", { style: { padding: "4px 10px 12px" } },
             qData.map((x, qi) => React.createElement("div", { key: qi, style: { marginTop: 12, border: "1px solid #E4EEF3", borderRadius: 10, overflow: "hidden" } },
                 React.createElement("div", { style: { background: NAVY, color: "#fff", padding: "8px 10px", display: "flex", justifyContent: "space-between", alignItems: "baseline" } },
                     React.createElement("div", { style: { fontWeight: 800, fontSize: 18 } }, `ไตรมาส ${qi + 1}`,
-                        React.createElement("span", { style: { fontWeight: 500, fontSize: 14.5, color: "#BFE6F8", marginLeft: 6 } }, `${MONTHS_TH[qi * 3]} – ${MONTHS_TH[qi * 3 + 2]}`)),
+                        React.createElement("span", { style: { fontWeight: 500, fontSize: 15, color: "#BFE6F8", marginLeft: 6 } }, `${MONTHS_TH[qi * 3]} – ${MONTHS_TH[qi * 3 + 2]}`)),
                     React.createElement("div", { style: { fontWeight: 800, fontSize: 18, color: GREEN } }, THB(x.total))),
                 React.createElement("div", { style: { overflowX: "auto" } },
                     React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 16 } },
-                        React.createElement("thead", null, React.createElement("tr", { style: { color: MUTE, fontSize: 14 } },
+                        React.createElement("thead", null, React.createElement("tr", { style: { color: MUTE, fontSize: 15 } },
                             React.createElement("th", { style: { padding: "6px", textAlign: "left" } }, "เดือน"),
                             React.createElement("th", { style: { ...td, fontWeight: 700 } }, "คอมฯ ปีแรก"),
                             React.createElement("th", { style: { ...td, fontWeight: 700 } }, "คอมฯ ต่ออายุ"),
@@ -604,11 +611,6 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, other, onOther,
                             qi === 3 && line("รางวัลเก็บเบี้ยรายปี", ab.collectBonus, { note: ab.collectBonus > 0 ? "10% ของคอมฯ ปีแรก" : "เฉพาะชำระเบี้ยแบบรายปี" }),
                             qi === 3 && line("เงินรางวัลคุณวุฒิไตรมาส", ab.qualReward || 0, { note: ab.qualLevel ? `ผ่านคุณวุฒิติดต่อกัน ${ab.qualLevel} ไตรมาส` : "ยังไม่ผ่าน (≥6 ราย + FYC ≥40,000/ไตรมาส ติดต่อกัน และทั้งปี ≥24 ราย / 160,000)" }),
                             qi === 3 && line("ผลประโยชน์ชั้นอาชีพ (CAREER)", career.benefit, { note: career.qualifies ? `${career.pct}% ของคอมฯ ต่ออายุทั้งปี` : "ยังไม่ผ่านเกณฑ์ปีนี้" }),
-                            React.createElement("tr", { style: { borderTop: "1px solid #EEF4F8" } },
-                                React.createElement("td", { colSpan: 2, style: { padding: "6px", color: MUTE, fontWeight: 600 } }, "การแข่งขัน / รางวัลอื่นๆ",
-                                    React.createElement("div", { style: { fontSize: 13.5, fontWeight: 500 } }, "กรอกเองได้ (ถ้ามี)")),
-                                React.createElement("td", { colSpan: 2, style: { padding: "4px 6px" } },
-                                    React.createElement(NumField, { label: "", value: x.oth || null, onChange: (v) => onOther((calYear - 1) * 4 + qi, v || 0), suffix: "บาท", compact: true }))),
                             React.createElement("tr", { style: { borderTop: `2px solid ${NAVY}`, background: "#EAF9DC" } },
                                 React.createElement("td", { colSpan: 3, style: { padding: "8px 6px", fontWeight: 800, color: NAVY } }, `รวมรายได้ไตรมาส ${qi + 1}`),
                                 React.createElement("td", { style: { ...td, padding: "8px 6px", fontWeight: 800, color: GREEN_DEEP, fontSize: 18 } }, THB(x.total)))))))),
@@ -745,13 +747,8 @@ const SUB_NAMES = { u2: "หน่วย 2", u1: "หน่วย 1", e2: "ข�
 const SUB_ALLOWED = { unit: ["u2", "u1"], exp: ["u2", "u1"], reg: ["u2", "u1", "e2", "e1"], dir: ["u2", "u1", "e2", "e1", "r2", "r1"] };
 const SUB_MIN = { e2: { u2: 1 }, e1: { u1: 1 }, r2: { e2: 1, u1: 1, u2: 1 }, r1: { e1: 1, u1: 1, u2: 1 }, d2: { r2: 2, e1: 2, e2: 2 }, d1: { r1: 2, r2: 2, e1: 2, e2: 2 } };
 const LV = (k) => EXEC_LEVELS.find((l) => l.key === k) || EXEC_LEVELS[0];
-// โครงสร้างหน่วยใต้สังกัดขั้นต่ำตามตาราง · CFYC ต่อหน่วยตั้งต้น = โควต้าของระดับหน่วยนั้น (แก้ไขได้)
-const defaultSubs = (levelKey) => {
-    const min = SUB_MIN[levelKey] || {};
-    const o = {};
-    SUB_ALLOWED[LV(levelKey).g].forEach((t) => { o[t] = { n: min[t] || 0, c: LV(t).q }; });
-    return o;
-};
+// หน่วยใต้สังกัดตั้งต้น = โครงสร้างขั้นต่ำตามตาราง · CFYC ต่อหน่วย = โควต้าของระดับหน่วยนั้น (แก้ไขได้)
+const defaultSubs = (levelKey) => Object.entries(SUB_MIN[levelKey] || {}).map(([t, n]) => ({ t, n, c: LV(t).q }));
 const defaultYear = (levelKey) => ({ level: levelKey, subs: defaultSubs(levelKey) });
 const UM_DEFAULT = { agents: 3, newPerYear: 2, includeOwn: true, newFromStart: false, years: Array.from({ length: 5 }, () => defaultYear("u2")) };
 const normUm = (u) => {
@@ -760,7 +757,9 @@ const normUm = (u) => {
     base.years = Array.from({ length: 5 }, (_, i) => {
         const y = u && Array.isArray(u.years) && u.years[i];
         if (!y || !y.level) return defaultYear(fallback);
-        return { level: y.level, subs: { ...defaultSubs(y.level), ...(y.subs || {}) } };
+        let subs = y.subs;
+        if (subs && !Array.isArray(subs)) subs = Object.entries(subs).filter(([, v]) => v && v.n > 0).map(([t, v]) => ({ t, n: v.n, c: v.c || LV(t).q }));
+        return { level: y.level, subs: (subs || []).filter((x) => SUB_NAMES[x.t]) };
     });
     delete base.level; delete base.perf;
     return base;
@@ -795,10 +794,10 @@ function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePer
         const ownFyc = sum("own"), teamFyc = sum("team"), directFyc = ownFyc + teamFyc;
         const ryc = sum("ownR") + sum("teamR"), newFyc = sum("nw");
         // หน่วยใต้สังกัด: นับเข้า CFYC 30% · คิดจาก CFYC เท่านั้น
-        const subList = SUB_ALLOWED[lv.g].map((t) => ({ t, n: (yr.subs[t] && yr.subs[t].n) || 0, c: (yr.subs[t] && yr.subs[t].c) || 0 })).filter((s) => s.n > 0);
-        const subCfycY = subList.reduce((s, x) => s + x.n * x.c * 12, 0);
+        const subList = (yr.subs || []).filter((s) => s.n > 0);
+        const subCfycY = subList.reduce((s, x) => s + x.n * (x.c || 0) * 12, 0);
         const subUnits = subList.reduce((s, x) => s + x.n, 0);
-        const subOkUnits = subList.reduce((s, x) => s + (x.c >= LV(x.t).q ? x.n : 0), 0);
+        const subOkUnits = subList.reduce((s, x) => s + ((x.c || 0) >= LV(x.t).q ? x.n : 0), 0);
         const cfyc = directFyc + subCfycY * 0.3;
         const agentsCount = A0 + NP * (y + 1);
         const minAgents = lv.g === "unit" ? 3 : 5;
@@ -806,7 +805,7 @@ function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePer
         const posOk = !belowQuota && teamOk && structOk;
         const why = belowQuota ? `CFYC ทั้งปียังไม่ถึงโควต้า ${THB(quotaY)}` : !teamOk ? `ตัวแทนตรงยังไม่ถึง ${minAgents} คน` : !structOk ? `หน่วยใต้สังกัดยังไม่ถึง ${lv.units} หน่วยตามตาราง` : "";
         const over = (cfyc / quotaY - 1) * 100, tier = overTier(over);
-        const bonusWhy = !posOk ? why : tier < 0 ? "CFYC ยังไม่เกินโควต้า" : !persOk ? "ความยั่งยืนปีที่ 2 ต่ำกว่า 70%" : "";
+        const bonusWhy = !posOk ? why : tier < 0 ? "CFYC ยังไม่เกินโควต้า" : !persOk ? "อัตราคงอยู่ต่ำกว่า 70%" : "";
         const items = [];
         items.push({ k: "1. เงินเดือน", v: posOk ? lv.s * 12 : 0, d: posOk ? `${THB(lv.s)} บาท × 12 เดือน` : why });
         items.push({ k: "2. ค่าขยายงาน", v: cfyc * lv.p / 100, d: `${lv.p}% × CFYC ทั้งปี ${THB(cfyc)}` });
@@ -835,228 +834,197 @@ function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePer
         }
         items.push({ k: "7. ค่าสร้างและรักษาตัวแทน", v: v7, d: v7 ? AGENT_RANKS.map((r, i) => (rankCnt[i] ? `${r.n} ${rankCnt[i]} คน-ไตรมาส` : "")).filter(Boolean).join(" · ") : qCases < 2 ? "ตัวแทนขายใหม่ไม่ถึง 2 ราย/ไตรมาส" : "FYC ตัวแทน/ไตรมาส ยังไม่ถึง 15,000" });
         const r8 = persOk ? PERS_RATE[String(pr)] : 0;
-        items.push({ k: "8. ค่าส่งเสริมความคงอยู่", v: ryc * r8 / 100, d: !ryc ? "ยังไม่มีค่านายหน้าปีต่ออายุ" : r8 ? `${r8}% × ค่านายหน้าปีต่ออายุ (ขายเอง+ตัวแทนตรง) ${THB(ryc)}` : "ความยั่งยืนปีที่ 2 ต่ำกว่า 70%" });
+        items.push({ k: "8. ค่าส่งเสริมความคงอยู่", v: ryc * r8 / 100, d: !ryc ? "ยังไม่มีค่านายหน้าปีต่ออายุ" : r8 ? `${r8}% × ค่านายหน้าปีต่ออายุ (ขายเอง+ตัวแทนตรง) ${THB(ryc)}` : "อัตราคงอยู่ต่ำกว่า 70%" });
         const exec = items.reduce((s, x) => s + x.v, 0);
         const ownIncome = own ? masterYearSummary[y].grandTotal : 0;
         return { y: y + 1, lv, agentsCount, directFyc, subCfycY, subUnits, cfyc, quotaY, posOk, why, over, items, exec, ownIncome, total: exec + ownIncome };
     });
 }
-function UmYearInput({ i, yr, prev, onChange }) {
+const SEL = { width: "100%", padding: "8px 6px", borderRadius: 10, border: "1px solid #BFD3E1", background: "#fff", font: "inherit", fontSize: 16.5, fontWeight: 600, color: NAVY };
+function TableNum({ value, onChange, width }) {
+    const [txt, setTxt] = useState(value == null ? "" : formatWithCommas(String(value)));
+    const [focus, setFocus] = useState(false);
+    useEffect(() => { if (!focus) setTxt(value == null ? "" : formatWithCommas(String(value))); }, [value, focus]);
+    return React.createElement("input", { type: "text", inputMode: "numeric", value: txt, onFocus: () => setFocus(true), onBlur: () => setFocus(false),
+        onChange: (e) => { const d = sanitizeDigits(e.target.value); setTxt(formatWithCommas(d)); onChange(d === "" ? 0 : Number(d)); },
+        style: { ...SEL, width: width || "100%", textAlign: "right", fontVariantNumeric: "tabular-nums" } });
+}
+function UmPositionTable({ years, setYear }) {
+    const th = { padding: "8px 6px", fontSize: 15, fontWeight: 700, color: MUTE, textAlign: "left", whiteSpace: "nowrap" };
+    const td = { padding: "5px 4px", verticalAlign: "middle" };
+    const iconBtn = (label, onClick, color) => React.createElement("button", { onClick, style: { minWidth: 34, height: 34, borderRadius: 10, border: `1px solid ${color}`, background: "#fff", color, fontSize: 19, fontWeight: 700, cursor: "pointer", lineHeight: 1 } }, label);
+    const rows = [];
+    years.forEach((yr, i) => {
+        const lv = LV(yr.level), allowed = SUB_ALLOWED[lv.g], subs = yr.subs || [];
+        const units = subs.reduce((s, x) => s + (x.n || 0), 0);
+        const span = Math.max(subs.length, 1) + 1;
+        const upSub = (j, k, v) => setYear(i, { ...yr, subs: subs.map((x, jj) => (jj === j ? { ...x, [k]: v } : x)) });
+        const addSub = () => { const t = allowed.find((a) => !subs.some((x) => x.t === a)) || allowed[0]; setYear(i, { ...yr, subs: [...subs, { t, n: 1, c: LV(t).q }] }); };
+        const bg = i % 2 ? "#F7FBFE" : "#fff";
+        const head = [
+            React.createElement("td", { key: "y", rowSpan: span, style: { ...td, fontWeight: 700, color: NAVY, fontSize: 18, whiteSpace: "nowrap", borderTop: "2px solid #D3E2EC" } }, `ปีที่ ${i + 1}`,
+                React.createElement("div", { style: { fontSize: 15, fontWeight: 600, color: units < lv.units ? "#C0392B" : MUTE } }, `${units} หน่วย${lv.units ? ` / ขั้นต่ำ ${lv.units}` : ""}`)),
+            React.createElement("td", { key: "l", rowSpan: span, style: { ...td, minWidth: 110, borderTop: "2px solid #D3E2EC" } },
+                React.createElement("select", { value: yr.level, onChange: (e) => setYear(i, defaultYear(e.target.value)), style: { ...SEL, fontSize: 17, fontWeight: 700 } },
+                    EXEC_LEVELS.map((l) => React.createElement("option", { key: l.key, value: l.key }, l.n))))];
+        if (!subs.length) {
+            rows.push(React.createElement("tr", { key: `${i}-0`, style: { background: bg } }, ...head,
+                React.createElement("td", { colSpan: 4, style: { ...td, color: MUTE, fontSize: 16, borderTop: "2px solid #D3E2EC" } }, "ไม่มีหน่วยใต้สังกัด")));
+        }
+        subs.forEach((x, j) => {
+            const top = j === 0 ? { borderTop: "2px solid #D3E2EC" } : {};
+            rows.push(React.createElement("tr", { key: `${i}-${j}`, style: { background: bg } }, ...(j === 0 ? head : []),
+                React.createElement("td", { style: { ...td, ...top, minWidth: 118 } },
+                    React.createElement("select", { value: x.t, onChange: (e) => setYear(i, { ...yr, subs: subs.map((s, jj) => (jj === j ? { t: e.target.value, n: s.n, c: LV(e.target.value).q } : s)) }), style: SEL },
+                        allowed.map((t) => React.createElement("option", { key: t, value: t }, SUB_NAMES[t])))),
+                React.createElement("td", { style: { ...td, ...top, width: 70 } }, React.createElement(TableNum, { value: x.n, onChange: (v) => upSub(j, "n", v) })),
+                React.createElement("td", { style: { ...td, ...top, minWidth: 104 } }, React.createElement(TableNum, { value: x.c, onChange: (v) => upSub(j, "c", v) })),
+                React.createElement("td", { style: { ...td, ...top, width: 40 } }, iconBtn("×", () => setYear(i, { ...yr, subs: subs.filter((_, jj) => jj !== j) }), "#C0392B"))));
+        });
+        rows.push(React.createElement("tr", { key: `${i}-add`, style: { background: bg } },
+            React.createElement("td", { colSpan: 4, style: { ...td, paddingBottom: 8 } },
+                React.createElement("button", { onClick: addSub, style: { padding: "5px 12px", borderRadius: 10, border: `1px dashed ${SKY_DEEP}`, background: "#fff", color: SKY_DEEP, fontWeight: 700, fontSize: 15, cursor: "pointer", font: "inherit" } }, "+ เพิ่มหน่วยใต้สังกัด"))));
+    });
+    return React.createElement("div", { style: { overflowX: "auto", background: "#fff", borderRadius: 14, border: "1px solid #BFDDF0" } },
+        React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+            React.createElement("thead", null, React.createElement("tr", { style: { background: "#F2F8FC" } },
+                React.createElement("th", { style: th }, "ปี"), React.createElement("th", { style: th }, "ตำแหน่ง"),
+                React.createElement("th", { style: th }, "หน่วยใต้สังกัด"), React.createElement("th", { style: th }, "จำนวน"),
+                React.createElement("th", { style: th }, "CFYC/หน่วย/ด."), React.createElement("th", { style: th }, ""))),
+            React.createElement("tbody", null, rows)));
+}
+function UmYearCard({ r }) {
     const [open, setOpen] = useState(false);
-    const lv = LV(yr.level);
-    const allowed = SUB_ALLOWED[lv.g];
-    const nUnits = allowed.reduce((s, t) => s + ((yr.subs[t] && yr.subs[t].n) || 0), 0);
-    const setSub = (t, k, v) => onChange({ ...yr, subs: { ...yr.subs, [t]: { ...yr.subs[t], [k]: v || 0 } } });
-    const chip = (l) => { const on = yr.level === l.key; return React.createElement("button", { key: l.key, onClick: () => onChange(defaultYear(l.key)), style: { padding: "8px 2px", borderRadius: 10, cursor: "pointer", fontSize: 15, fontWeight: 700, border: on ? `2px solid ${NAVY}` : "2px solid #DCE9F0", background: on ? NAVY : "#fff", color: on ? "#fff" : NAVY } }, l.n); };
-    return React.createElement("div", { style: { borderTop: i ? "1px dashed #DCE9F0" : "none", padding: "10px 0" } },
-        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
-            React.createElement("div", { style: { fontSize: 17, fontWeight: 800, color: NAVY } }, `ปีที่ ${i + 1}`),
-            prev && React.createElement("button", { onClick: () => onChange(JSON.parse(JSON.stringify(prev))), style: { fontSize: 14, fontWeight: 700, color: SKY_DEEP, background: "none", border: "none", cursor: "pointer", padding: 0 } }, "ใช้เหมือนปีก่อน")),
-        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 5 } }, EXEC_LEVELS.map(chip)),
-        React.createElement("button", { onClick: () => setOpen(!open), style: { marginTop: 8, width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", borderRadius: 10, border: "1px solid #DCE9F0", background: PAPER, cursor: "pointer", font: "inherit", fontSize: 15, fontWeight: 700, color: MUTE } },
-            React.createElement("span", null, `หน่วยใต้สังกัด ${nUnits} หน่วย${lv.units ? ` (ขั้นต่ำ ${lv.units})` : ""}`),
-            open ? React.createElement(ChevronUp, { size: 16, color: MUTE }) : React.createElement(ChevronDown, { size: 16, color: MUTE })),
-        open && React.createElement("div", { style: { marginTop: 6 } },
-            allowed.map((t) => React.createElement("div", { key: t, style: { display: "grid", gridTemplateColumns: "0.9fr 0.8fr 1.3fr", gap: 6, alignItems: "end", marginTop: 6 } },
-                React.createElement("div", { style: { fontSize: 15, fontWeight: 800, color: INK, paddingBottom: 12 } }, SUB_NAMES[t]),
-                React.createElement(NumField, { label: "จำนวน", value: yr.subs[t] ? yr.subs[t].n : 0, onChange: (v) => setSub(t, "n", v), suffix: "หน่วย", compact: true }),
-                React.createElement(NumField, { label: "CFYC/หน่วย/ด.", value: yr.subs[t] ? yr.subs[t].c : LV(t).q, onChange: (v) => setSub(t, "c", v), suffix: "บาท", compact: true }))),
-            React.createElement("div", { style: { fontSize: 13.5, color: MUTE, marginTop: 6 } }, "นับเข้า CFYC ของเรา 30% · ตั้งต้นเท่าโควต้าของแต่ละระดับ")));
-}
-function UmYearCard({ r, defaultOpen }) {
-    const [open, setOpen] = useState(defaultOpen);
-    return React.createElement("div", { style: { border: "1px solid #DCE9F0", borderRadius: 12, overflow: "hidden", marginBottom: 10 } },
-        React.createElement("button", { onClick: () => setOpen(!open), style: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "12px 14px", background: PAPER, border: "none", cursor: "pointer", textAlign: "left", font: "inherit" } },
+    return React.createElement("div", { style: { border: "1px solid #D3E2EC", borderRadius: 14, overflow: "hidden", marginBottom: 10, background: "#fff" } },
+        React.createElement("button", { onClick: () => setOpen(!open), style: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "12px 14px", background: open ? "#D9EEFA" : "#F2F8FC", border: "none", borderLeft: `6px solid ${r.posOk ? GREEN_DEEP : "#C0392B"}`, cursor: "pointer", textAlign: "left", font: "inherit" } },
             React.createElement("div", { style: { minWidth: 0 } },
-                React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 20 } }, `ปีที่ ${r.y} · ${r.lv.n}`),
-                React.createElement("div", { style: { fontSize: 15, color: r.posOk ? MUTE : "#C0392B", marginTop: 2 } }, `ตัวแทนตรง ${r.agentsCount} คน · หน่วย ${r.subUnits} · CFYC ${THB(r.cfyc / 12)}/ด. (${(100 + r.over).toFixed(0)}% ของโควต้า)`),
-                !r.posOk && React.createElement("div", { style: { fontSize: 14, color: "#C0392B" } }, r.why)),
+                React.createElement("div", { style: { fontWeight: 700, color: NAVY, fontSize: 20 } }, `ปีที่ ${r.y} · ${r.lv.n}`),
+                React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 2 } }, `ตัวแทนตรง ${r.agentsCount} คน · หน่วยใต้สังกัด ${r.subUnits} · CFYC ${(100 + r.over).toFixed(0)}% ของโควต้า`),
+                !r.posOk && React.createElement("div", { style: { fontSize: 15, color: "#C0392B", fontWeight: 600 } }, r.why)),
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6 } },
-                React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: NAVY, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, THB(r.total)),
-                open ? React.createElement(ChevronUp, { size: 18, color: NAVY }) : React.createElement(ChevronDown, { size: 18, color: NAVY }))),
-        open && React.createElement("div", { style: { padding: "4px 14px 12px" } },
-            r.ownIncome > 0 && React.createElement("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "8px 0", fontWeight: 800, color: SKY_DEEP, fontSize: 17 } },
+                React.createElement("div", { style: { fontSize: 21, fontWeight: 700, color: NAVY, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, THB(r.total)),
+                open ? React.createElement(ChevronUp, { size: 22, color: NAVY }) : React.createElement(ChevronDown, { size: 22, color: NAVY }))),
+        open && React.createElement("div", { style: { padding: "6px 16px 12px" } },
+            r.ownIncome > 0 && React.createElement("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "8px 0", fontWeight: 700, color: SKY_DEEP, fontSize: 18 } },
                 React.createElement("span", null, "ก. รายได้ขายเอง (จากแทปตัวแทน)"), React.createElement("span", null, THB(r.ownIncome))),
-            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "8px 0 2px", fontWeight: 800, color: GREEN_DEEP, fontSize: 17 } },
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "8px 0 2px", fontWeight: 700, color: GREEN_DEEP, fontSize: 18 } },
                 React.createElement("span", null, `ข. ผลประโยชน์ผู้บริหาร (${r.lv.n})`), React.createElement("span", null, THB(r.exec))),
-            React.createElement("div", { style: { fontSize: 14, color: MUTE, paddingBottom: 4 } }, `CFYC = ขายเอง+ตัวแทนตรง ${THB(r.directFyc)} + 30% ของหน่วยใต้สังกัด ${THB(r.subCfycY)}`),
-            r.items.map((x, i) => React.createElement("div", { key: i, style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "7px 0", borderTop: "1px dashed #DCE9F0", opacity: x.v > 0 ? 1 : 0.55 } },
+            React.createElement("div", { style: { fontSize: 15, color: MUTE, paddingBottom: 4 } }, `CFYC = ขายเอง+ตัวแทนตรง ${THB(r.directFyc)} + 30% ของหน่วยใต้สังกัด ${THB(r.subCfycY)}`),
+            r.items.map((x, i) => React.createElement("div", { key: i, style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "8px 0", borderTop: "1px dashed #D3E2EC", opacity: x.v > 0 ? 1 : 0.55 } },
                 React.createElement("div", { style: { minWidth: 0 } },
-                    React.createElement("div", { style: { fontSize: 16, fontWeight: 700, color: INK } }, x.k),
-                    React.createElement("div", { style: { fontSize: 14, color: MUTE, lineHeight: 1.4 } }, x.d)),
-                React.createElement("div", { style: { fontSize: 17, fontWeight: 800, color: INK, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, THB(x.v))))));
+                    React.createElement("div", { style: { fontSize: 17, fontWeight: 700, color: INK } }, x.k),
+                    React.createElement("div", { style: { fontSize: 15, color: MUTE, lineHeight: 1.4 } }, x.d)),
+                React.createElement("div", { style: { fontSize: 18, fontWeight: 700, color: INK, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, THB(x.v))))));
 }
-function UmTab({ um, setUm, monthReport, quarters, masterYearSummary, safeCases, safePersist, resetToken }) {
+function UmTab({ um, setUm, monthReport, quarters, masterYearSummary, safeCases, safePersist }) {
     const upd = (k, v) => setUm((p) => ({ ...p, [k]: v }));
     const setYear = (i, yr) => setUm((p) => { const ys = [...p.years]; ys[i] = yr; return { ...p, years: ys }; });
     const rows = calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePersist);
     const tot = rows.reduce((a, r) => ({ own: a.own + r.ownIncome, exec: a.exec + r.exec, total: a.total + r.total }), { own: 0, exec: 0, total: 0 });
-    const card = { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginBottom: 16 };
-    const h = (t) => React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 21, marginBottom: 8 } }, t);
-    const sub = (t) => React.createElement("div", { style: { fontSize: 18, color: MUTE, fontWeight: 700, margin: "14px 0 6px" } }, t);
-    const chip = (label, on, onClick) => React.createElement("button", { key: label, onClick, style: { padding: "9px 4px", borderRadius: 10, cursor: "pointer", fontSize: 16, fontWeight: 700, border: on ? `2px solid ${SKY_DEEP}` : "2px solid #DCE9F0", background: on ? SKY_DEEP : "#fff", color: on ? "#fff" : NAVY } }, label);
-    const grid = (n, kids) => React.createElement("div", { style: { display: "grid", gridTemplateColumns: `repeat(${n}, minmax(0,1fr))`, gap: 6 } }, kids);
-    const agentFycM = masterYearSummary[0].byYear[0] / 12;
-    const chart = rows.map((r) => ({ name: `ปีที่ ${r.y}`, "ขายเอง": Math.round(r.ownIncome), "ผู้บริหาร": Math.round(r.exec) }));
-    const y5 = rows[4];
+    const chip = (label, on, onClick) => React.createElement("button", { key: label, onClick, style: { padding: "9px 4px", borderRadius: 12, cursor: "pointer", fontSize: 16.5, fontWeight: 700, border: on ? `2px solid ${NAVY}` : "2px solid #BFDDF0", background: on ? NAVY : "#fff", color: on ? "#fff" : NAVY } }, label);
+    const grid2 = (kids) => React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 } }, kids);
+    const lbl = (t) => React.createElement("div", { style: { fontSize: 17, fontWeight: 700, color: NAVY, margin: "14px 0 6px" } }, t);
+    const series = [{ name: "ขายเอง", color: SKY, total: tot.own }, { name: "ผู้บริหาร", color: GREEN, total: tot.exec }];
+    const data = rows.map((r) => ({ label: `ปี ${r.y}`, values: [r.ownIncome, r.exec] }));
+    const maxAgents = Math.max(30, um.agents || 0), maxNew = Math.max(10, um.newPerYear || 0);
     return React.createElement(React.Fragment, null,
-        React.createElement("div", { style: card },
-            h("ตัวแทนตรงในทีม"),
-            React.createElement("div", { style: { background: PAPER, borderRadius: 10, padding: "8px 10px", fontSize: 15, color: MUTE, lineHeight: 1.5 } },
-                `ตัวแทนทุกคนทำผลงานเท่าแทปตัวแทน: ${safeCases} ราย/เดือน · FYC ปีแรก ≈ ${THB(agentFycM)} บาท/เดือน · ความยั่งยืน ${safePersist}%`),
-            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 } },
-                React.createElement(NumField, { key: `uma-${resetToken}`, label: "ตัวแทนตรงตอนเริ่ม", value: um.agents, onChange: (v) => upd("agents", v), suffix: "คน", compact: true }),
-                React.createElement(NumField, { key: `umn-${resetToken}`, label: "ตัวแทนใหม่เพิ่ม/ปี", value: um.newPerYear, onChange: (v) => upd("newPerYear", v), suffix: "คน", compact: true })),
-            React.createElement("div", { style: { fontSize: 14.5, color: MUTE, marginTop: 4 } }, `ปีที่ 5 จะมีตัวแทนตรง ${(um.agents || 0) + (um.newPerYear || 0) * 5} คน (ตัวแทนใหม่เข้าต้นปี)`),
-            sub("ผู้บริหารขายเองด้วยไหม"),
-            grid(2, [chip("ขายเองด้วย", um.includeOwn !== false, () => upd("includeOwn", true)), chip("บริหารอย่างเดียว", um.includeOwn === false, () => upd("includeOwn", false))]),
-            sub("ทีมตั้งต้นเป็นตัวแทนใหม่ที่สร้างเอง (ได้ค่าสร้างทีมปีแรก)"),
-            grid(2, [chip("ใช่", !!um.newFromStart, () => upd("newFromStart", true)), chip("ไม่ใช่", !um.newFromStart, () => upd("newFromStart", false))])),
-        React.createElement("div", { style: card },
-            h("ตำแหน่งและหน่วยใต้สังกัด รายปี"),
-            React.createElement("div", { style: { fontSize: 14.5, color: MUTE, marginBottom: 4 } }, "เลือกตำแหน่งแต่ละปีได้ (เลื่อนขั้นได้) · เปลี่ยนตำแหน่งแล้วหน่วยใต้สังกัดจะตั้งตามโครงสร้างขั้นต่ำในตาราง แก้ไขเพิ่มได้"),
-            um.years.map((yr, i) => React.createElement(UmYearInput, { key: `${i}-${resetToken}`, i, yr, prev: i ? um.years[i - 1] : null, onChange: (v) => setYear(i, v) }))),
-        React.createElement("div", { style: { ...card, background: NAVY, color: "#fff", border: "none" } },
-            React.createElement("div", { style: { fontSize: 17, color: "#BFE6F8", fontWeight: 700 } }, "รายได้ผู้บริหารรวม 5 ปี"),
-            React.createElement("div", { style: { fontSize: 38, fontWeight: 800, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" } }, THB(tot.total), React.createElement("span", { style: { fontSize: 18, color: "#BFE6F8", marginLeft: 6 } }, "บาท")),
-            React.createElement("div", { style: { fontSize: 16, color: "#BFE6F8", marginTop: 4 } }, `ขายเอง ${THB(tot.own)} + ผู้บริหาร ${THB(tot.exec)}`),
-            React.createElement("div", { style: { fontSize: 17, marginTop: 6 } }, "ปีที่ 5 เฉลี่ย ", React.createElement("b", { style: { color: GREEN } }, THB(y5.total / 12)), " บาท/เดือน")),
-        React.createElement("div", { style: card },
-            h("รายได้รายปี"),
-            React.createElement(ResponsiveContainer, { width: "100%", height: 210 },
-                React.createElement(BarChart, { data: chart },
-                    React.createElement(XAxis, { dataKey: "name", tick: { fontSize: 17, fill: MUTE } }),
-                    React.createElement(YAxis, { tick: { fontSize: 15, fill: MUTE }, width: 62 }),
-                    React.createElement(Tooltip, { content: React.createElement(ChartTooltip, null), cursor: false }),
-                    React.createElement(Legend, { wrapperStyle: { fontSize: 17 } }),
-                    React.createElement(Bar, { dataKey: "ขายเอง", stackId: "a", fill: SKY_DEEP }),
-                    React.createElement(Bar, { dataKey: "ผู้บริหาร", stackId: "a", fill: GREEN_DEEP, radius: [6, 6, 0, 0] }))),
-            React.createElement("div", { style: { height: 10 } }),
-            rows.map((r, i) => React.createElement(UmYearCard, { key: r.y, r, defaultOpen: i === 0 }))),
-        React.createElement("div", { style: { fontSize: 14, color: MUTE, lineHeight: 1.55, padding: "0 4px 8px" } },
+        React.createElement("div", { className: "dash" },
+            React.createElement("div", { style: CARD_SUM },
+                React.createElement("div", { style: { fontSize: 18, color: "#CDEBFA", fontWeight: 700 } }, "รายได้ผู้บริหารรวม 5 ปี"),
+                React.createElement("div", { style: { fontSize: 46, fontWeight: 700, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" } }, THB(tot.total),
+                    React.createElement("span", { style: { fontSize: 20, color: "#CDEBFA", marginLeft: 6 } }, "บาท")),
+                React.createElement("div", { style: { height: 1, background: "rgba(255,255,255,0.18)", margin: "12px 0" } }),
+                React.createElement("div", { style: { fontSize: 16.5, color: "#CDEBFA", fontWeight: 700, marginBottom: 6 } }, "รายได้ทั้งปี (หน่วย: 1,000 บาท)"),
+                React.createElement(YearBars, { data, series })),
+            React.createElement("div", { style: CARD_CTRL },
+                React.createElement("div", { style: { fontSize: 21, fontWeight: 700, color: NAVY } }, "ปรับทีมตัวแทนตรง"),
+                React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 2 } }, `ทุกคนทำผลงานเท่าแทปตัวแทน · ${safeCases} ราย/เดือน · อัตราคงอยู่ ${safePersist}%`),
+                React.createElement(Slider, { label: "ตัวแทนตรงตอนเริ่ม", value: um.agents, onChange: (v) => upd("agents", v), min: 0, max: maxAgents, unit: "คน", color: NAVY }),
+                React.createElement(Slider, { label: "ตัวแทนใหม่เพิ่มต่อปี", value: um.newPerYear, onChange: (v) => upd("newPerYear", v), min: 0, max: maxNew, unit: "คน", color: GREEN_DEEP }),
+                React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 6 } }, `ปีที่ 5 จะมีตัวแทนตรง ${(um.agents || 0) + (um.newPerYear || 0) * 5} คน (ตัวแทนใหม่เข้าต้นปี)`),
+                lbl("ผู้บริหารขายเองด้วยไหม"),
+                grid2([chip("ขายเองด้วย", um.includeOwn !== false, () => upd("includeOwn", true)), chip("บริหารอย่างเดียว", um.includeOwn === false, () => upd("includeOwn", false))]),
+                lbl("ทีมตั้งต้นเป็นตัวแทนใหม่ที่สร้างเอง"),
+                grid2([chip("ใช่ (ได้ค่าสร้างทีมปีแรก)", !!um.newFromStart, () => upd("newFromStart", true)), chip("ไม่ใช่", !um.newFromStart, () => upd("newFromStart", false))]))),
+        React.createElement("div", { style: { ...CARD_CTRL, marginBottom: 16 } },
+            React.createElement("div", { style: { fontSize: 21, fontWeight: 700, color: NAVY } }, "ตำแหน่งและหน่วยใต้สังกัด รายปี"),
+            React.createElement("div", { style: { fontSize: 15.5, color: MUTE, margin: "2px 0 10px" } }, "เปลี่ยนตำแหน่งแล้วหน่วยใต้สังกัดจะตั้งตามโครงสร้างขั้นต่ำในตาราง · CFYC ตั้งต้นเท่าโควต้าของแต่ละระดับ · นับเข้า CFYC ของเรา 30%"),
+            React.createElement(UmPositionTable, { years: um.years, setYear })),
+        React.createElement(Detail, { title: "ผลประโยชน์ผู้บริหาร แยกรายปี", sub: "แตะแต่ละปีเพื่อดูผลประโยชน์ทุกรายการ" },
+            rows.map((r) => React.createElement(UmYearCard, { key: r.y, r }))),
+        React.createElement("div", { style: { fontSize: 15, color: MUTE, lineHeight: 1.6, padding: "4px 6px 8px" } },
             "* CFYC = FYC ขายเอง + ตัวแทนตรง 100% + หน่วยใต้สังกัด 30% · ค่าสร้างทีม, ค่าสร้างและรักษาตัวแทน, ค่าส่งเสริมความคงอยู่ คิดจากตัวแทนตรงเท่านั้น · เงินเดือนและโบนัสจ่ายเมื่อ CFYC ทั้งปีถึงโควต้า มีตัวแทนตรงและหน่วยใต้สังกัดครบตามตาราง · อ้างอิง รบข.45/2566, รบข.24/2552, พจน.5/2535, รบข.2/2564, รบข.2/2546, รบข.6/2541 · ตัวเลขเป็นการประมาณการ ไม่ใช่การรับประกันรายได้"));
 }
-function CommissionPlanner() {
-    const [modeKey, setModeKey] = useState(DEFAULTS.modeKey);
-    const [premiumPerInstallment, setPremiumPerInstallment] = useState(DEFAULTS.premiumPerInstallment);
-    const [casesPerMonth, setCasesPerMonth] = useState(DEFAULTS.casesPerMonth);
-    const [rates, setRates] = useState(DEFAULTS.rates);
-    const [retentionTiers, setRetentionTiers] = useState(DEFAULTS.retentionTiers);
-    const [tenureStart, setTenureStart] = useState(DEFAULTS.tenureStart);
-    const [persistency, setPersistency] = useState(DEFAULTS.persistency);
-    const [saveStatus, setSaveStatus] = useState(""); // ข้อความแจ้งเตือนสถานะบันทึก/ล้าง
-    const [loaded, setLoaded] = useState(false);
-    const [resetToken, setResetToken] = useState(0); // เปลี่ยนค่านี้เพื่อบังคับให้ช่องกรอกรีเฟรชค่าใหม่จริงๆ
-    const [goalKey, setGoalKey] = useState("house");
-    const [goalAmount, setGoalAmount] = useState(3000000);
-    const [goalYears, setGoalYears] = useState("5");
-    const [ex, setEx] = useState(EX_DEFAULT);
-    const [um, setUm] = useState(UM_DEFAULT);
-    const [tab, setTab] = useState("agent");
-    const [otherAwards, setOtherAwards] = useState(Array(20).fill(0));
-    const setOther = (i, v) => setOtherAwards((a) => { const n = [...a]; n[i] = v; return n; });
-    const upd = (k, v) => setEx((p) => ({ ...p, [k]: v }));
-    // โหลดข้อมูลล่าสุดที่บันทึกไว้ทันทีที่เปิดเครื่องมือ
-    useEffect(() => {
-        (async () => {
-            try {
-                const res = await window.storage.get(STORAGE_KEY, false);
-                if (res && res.value) {
-                    const saved = JSON.parse(res.value);
-                    if (saved.modeKey)
-                        setModeKey(saved.modeKey);
-                    if (typeof saved.premiumPerInstallment === "number")
-                        setPremiumPerInstallment(saved.premiumPerInstallment);
-                    if (typeof saved.casesPerMonth === "number")
-                        setCasesPerMonth(saved.casesPerMonth);
-                    if (Array.isArray(saved.rates))
-                        setRates(saved.rates);
-                    if (Array.isArray(saved.retentionTiers))
-                        setRetentionTiers(saved.retentionTiers);
-                    if (typeof saved.tenureStart === "number")
-                        setTenureStart(saved.tenureStart);
-                    if (typeof saved.persistency === "number")
-                        setPersistency(saved.persistency);
-                    if (saved.ex && typeof saved.ex === "object")
-                        setEx({ ...EX_DEFAULT, ...saved.ex });
-                    if (Array.isArray(saved.otherAwards)) setOtherAwards(saved.otherAwards);
-                    if (saved.um && typeof saved.um === "object") setUm(normUm(saved.um));
-                    if (saved.tab === "um" || saved.tab === "agent") setTab(saved.tab);
-                    if (saved.goalKey) setGoalKey(saved.goalKey);
-                    if (typeof saved.goalAmount === "number") setGoalAmount(saved.goalAmount);
-                    if (saved.goalYears) setGoalYears(saved.goalYears);
-                }
-            }
-            catch (e) {
-                // ยังไม่เคยบันทึกไว้ก่อนหน้านี้ ใช้ค่าเริ่มต้นตามปกติ
-            }
-            finally {
-                setResetToken((t) => t + 1);
-                setLoaded(true);
-            }
-        })();
-    }, []);
-    // บันทึกอัตโนมัติทุกครั้งที่มีการแก้ไขข้อมูล (หน่วงเล็กน้อยเพื่อไม่ยิงถี่เกินไประหว่างพิมพ์)
-    useEffect(() => {
-        if (!loaded)
-            return; // รอโหลดข้อมูลเดิมให้เสร็จก่อน กันไม่ให้ค่าเริ่มต้นทับข้อมูลที่บันทึกไว้
-        const t = setTimeout(async () => {
-            try {
-                const payload = { modeKey, premiumPerInstallment, casesPerMonth, rates, retentionTiers, persistency, tenureStart, ex, goalKey, goalAmount, goalYears, otherAwards, um, tab };
-                await window.storage.set(STORAGE_KEY, JSON.stringify(payload), false);
-                setSaveStatus("บันทึกอัตโนมัติแล้ว ✓");
-                setTimeout(() => setSaveStatus(""), 1500);
-            }
-            catch (e) {
-                // เงียบไว้ ไม่ต้องรบกวนผู้ใช้ถ้าบันทึกไม่สำเร็จชั่วคราว
-            }
-        }, 600);
-        return () => clearTimeout(t);
-    }, [modeKey, premiumPerInstallment, casesPerMonth, rates, JSON.stringify(retentionTiers), persistency, tenureStart, JSON.stringify(ex), JSON.stringify(otherAwards), JSON.stringify(um), tab, goalKey, goalAmount, goalYears, loaded]);
-    // ล้างข้อมูล: รีเซ็ตค่าบนหน้าจอกลับเป็นค่าเริ่มต้น และลบข้อมูลที่บันทึกไว้ทั้งหมด
-    const handleClearAll = async () => {
-        setModeKey(CLEARED.modeKey);
-        setPremiumPerInstallment(CLEARED.premiumPerInstallment);
-        setCasesPerMonth(CLEARED.casesPerMonth);
-        setRates(CLEARED.rates);
-        setRetentionTiers(CLEARED.retentionTiers);
-        setTenureStart(CLEARED.tenureStart);
-        setPersistency(CLEARED.persistency);
-        setEx(EX_DEFAULT);
-        setOtherAwards(Array(20).fill(0));
-        setUm(UM_DEFAULT);
-        try {
-            await window.storage.delete(STORAGE_KEY, false);
-        }
-        catch (e) {
-            // ไม่มีข้อมูลบันทึกไว้อยู่แล้วก็ไม่เป็นไร
-        }
-        setResetToken((t) => t + 1); // บังคับให้ทุกช่องกรอกแสดงค่าใหม่จริงๆ ไม่ค้างค่าเดิม
-        setSaveStatus("ล้างข้อมูลหน้าจอแล้ว");
-        setTimeout(() => setSaveStatus(""), 3000);
-    };
-    // Ordered refs for "กด Enter ไปช่องถัดไป": 0 premium, 1 cases, 2-6 rates[0..4]
-    const fieldRefs = useRef([]);
-    const focusField = (i) => {
-        var _a;
-        const el = fieldRefs.current[i];
-        if (el)
-            el.focus();
-        else
-            (_a = fieldRefs.current[i - 1]) === null || _a === void 0 ? void 0 : _a.blur();
-    };
+// ===== ส่วนประกอบหน้าจอแบบแดชบอร์ด (ใช้ร่วมกันทั้งแทปตัวแทนและ UM) =====
+const fmtK = (v) => Math.round((v || 0) / 1000).toLocaleString("en-US");
+const CARD_SUM = { background: `linear-gradient(160deg, ${NAVY} 0%, #0B4A86 100%)`, color: "#fff", borderRadius: 20, padding: "18px 20px", boxShadow: "0 10px 28px rgba(0,45,98,0.25)" };
+const CARD_CTRL = { background: "#E3F2FB", borderRadius: 20, padding: "16px 18px", border: "1px solid #BFDDF0" };
+const CARD_GOAL = { background: "#FFF3DC", borderRadius: 20, padding: "16px 18px", border: "1px solid #F1D29A", marginBottom: 16 };
+function YearBars({ data, series, height = 190 }) {
+    const totals = data.map((d) => d.values.reduce((a, b) => a + b, 0));
+    const max = Math.max(...totals, 1);
+    return React.createElement("div", null,
+        React.createElement("div", { style: { display: "grid", gridTemplateColumns: `repeat(${data.length}, 1fr)`, gap: 10, alignItems: "end", height } },
+            data.map((d, i) => React.createElement("div", { key: i, style: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" } },
+                React.createElement("div", { style: { fontSize: 19, fontWeight: 700, marginBottom: 4, fontVariantNumeric: "tabular-nums", color: i === data.length - 1 ? GREEN : "#fff" } }, fmtK(totals[i])),
+                React.createElement("div", { style: { width: "70%", height: `${Math.max((totals[i] / max) * (height - 60), 3)}px`, display: "flex", flexDirection: "column-reverse", borderRadius: "8px 8px 3px 3px", overflow: "hidden", transition: "height .3s ease" } },
+                    d.values.map((v, j) => (v > 0 ? React.createElement("div", { key: j, style: { height: `${(v / (totals[i] || 1)) * 100}%`, background: series[j].color } }) : null))),
+                React.createElement("div", { style: { fontSize: 16, marginTop: 6, color: "#CDEBFA", fontWeight: 600 } }, d.label)))),
+        React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: "6px 16px", marginTop: 12 } },
+            series.map((s, j) => React.createElement("span", { key: j, style: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 16, color: "#E4F4FD" } },
+                React.createElement("span", { style: { width: 13, height: 13, borderRadius: 3, background: s.color, display: "inline-block" } }),
+                s.name, s.total != null && React.createElement("b", { style: { color: "#fff" } }, fmtK(s.total))))));
+}
+function Slider({ label, value, onChange, min, max, step = 1, unit, color = SKY_DEEP }) {
+    const v = value == null ? min : Math.min(Math.max(value, min), max);
+    const pct = ((v - min) / (max - min)) * 100;
+    return React.createElement("div", { style: { marginTop: 14 } },
+        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 } },
+            React.createElement("div", { style: { fontSize: 18, fontWeight: 700, color: NAVY } }, label),
+            React.createElement("div", { style: { fontSize: 28, fontWeight: 700, color, fontVariantNumeric: "tabular-nums", lineHeight: 1 } }, v,
+                React.createElement("span", { style: { fontSize: 16, color: MUTE, marginLeft: 4, fontWeight: 600 } }, unit))),
+        React.createElement("input", { type: "range", className: "slider", min, max, step, value: v, onChange: (ev) => onChange(Number(ev.target.value)), style: { background: `linear-gradient(90deg, ${color} ${pct}%, #C9DCE8 ${pct}%)` } }),
+        React.createElement("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 15, color: MUTE } },
+            React.createElement("span", null, `${min} ${unit}`), React.createElement("span", null, `${max} ${unit}`)));
+}
+function Detail({ title, sub, children, defaultOpen = false }) {
+    const [open, setOpen] = useState(defaultOpen);
+    return React.createElement("div", { style: { background: "#fff", borderRadius: 18, border: "1px solid #D3E2EC", marginBottom: 12, overflow: "hidden", boxShadow: "0 2px 8px rgba(11,46,79,0.05)" } },
+        React.createElement("button", { onClick: () => setOpen(!open), style: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, padding: "14px 18px", background: open ? "#D9EEFA" : "#F2F8FC", border: "none", borderLeft: `6px solid ${SKY_DEEP}`, cursor: "pointer", textAlign: "left", font: "inherit" } },
+            React.createElement("div", null,
+                React.createElement("div", { style: { fontSize: 20, fontWeight: 700, color: NAVY } }, title),
+                sub && React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 2 } }, sub)),
+            open ? React.createElement(ChevronUp, { size: 24, color: NAVY }) : React.createElement(ChevronDown, { size: 24, color: NAVY })),
+        open && React.createElement("div", { style: { padding: "12px 12px 4px" } }, children));
+}
+function MiniToggle({ title, children }) {
+    const [open, setOpen] = useState(false);
+    return React.createElement("div", { style: { marginTop: 14 } },
+        React.createElement("button", { onClick: () => setOpen(!open), style: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", borderRadius: 12, border: "1px solid #BFDDF0", background: "#fff", cursor: "pointer", font: "inherit", fontSize: 16.5, fontWeight: 700, color: NAVY } },
+            React.createElement("span", null, title),
+            open ? React.createElement(ChevronUp, { size: 18, color: NAVY }) : React.createElement(ChevronDown, { size: 18, color: NAVY })),
+        open && React.createElement("div", { style: { marginTop: 10 } }, children));
+}
+// ===== คำนวณรายได้ตัวแทนทั้งหมด (ฟังก์ชันล้วน ใช้ซ้ำได้ เช่น หาจำนวนรายที่ต้องขายให้ถึงเป้า) =====
+function quarterTotals(M) {
+    const out = [];
+    M.quarters.forEach((q, qi) => {
+        const y = Math.floor(qi / 4), qin = qi % 4;
+        const comm = M.monthReport.slice(qi * 3, qi * 3 + 3).reduce((s, r) => s + r.total, 0);
+        const ab = M.annualBonusByYear[y], cr = M.careerByYear[y];
+        const yearEnd = qin === 3 ? ab.net + ab.collectBonus + cr.benefit + (ab.qualReward || 0) : 0;
+        out.push(comm + q.bonus + ((ab.joinQ && ab.joinQ[qin]) || 0) + yearEnd);
+    });
+    return out;
+}
+function computeAgent({ safePremium, modeKey, safeRates, safeCases, safePersist, tenureStart }) {
     const mode = MODES.find((m) => m.key === modeKey) || MODES[0];
-    const safePremium = premiumPerInstallment || 0;
-    const safeCases = casesPerMonth || 0;
-    const safeRates = rates.map((r) => r || 0);
-    // อัตราคงอยู่ (ตรงกับแอป Recruiting): ใช้ลดคอมฯ ปีต่อ (ปี 2-5) ทุกปีเท่ากัน · ปีแรกของตัวแทนใหม่ (อายุงาน 1 ปี) ใช้ 75% ตามระเบียบ เฉพาะคำนวณโบนัส
-    const safePersist = persistency || 0;
     const keepRatio = safePersist / 100;
     const yearPersist = (i) => ((tenureStart || 0) + i) <= 1 ? 75 : safePersist;
     const annualPremiumPerCase = safePremium * mode.installments;
-    const perCase = useMemo(() => perCaseSchedule({ premiumPerInstallment: safePremium, modeKey, rates: safeRates, specialFirstYear: true }), [safePremium, modeKey, JSON.stringify(safeRates)]);
+    const perCase = perCaseSchedule({ premiumPerInstallment: safePremium, modeKey, rates: safeRates, specialFirstYear: true });
     // Aggregate across cohorts: monthReport[m] = {month, byYear[5], total, premium}
-    const monthReport = useMemo(() => {
+    const monthReport = (() => {
         const report = Array.from({ length: 60 }, (_, i) => ({
             month: i + 1,
             byYear: [0, 0, 0, 0, 0],
@@ -1079,7 +1047,7 @@ function CommissionPlanner() {
             }
         }
         return report;
-    }, [perCase, safeCases, keepRatio]);
+    })();
     const totalCommission5y = monthReport.reduce((s, r) => s + r.total, 0);
     const totalPremium5y = monthReport.reduce((s, r) => s + r.premium, 0);
     const yearGroups = Array.from({ length: 5 }, (_, i) => {
@@ -1219,6 +1187,134 @@ function CommissionPlanner() {
         acc.grandTotal += y.grandTotal;
         return acc;
     }, { byYear: [0, 0, 0, 0, 0], commissionSubtotal: 0, quarterlyBonus: 0, annualBonus: 0, collectBonus: 0, careerBenefit: 0, qualReward: 0, joining: 0, grandTotal: 0 });
+    return { keepRatio, yearPersist, annualPremiumPerCase, perCase, monthReport, totalCommission5y, totalPremium5y, yearGroups, yearlyStacked, chunkSizeMonths, totalPeriodsAll, periodTrend, quarters, annualBonusByYear, safeTenureStart, careerByYear, masterYearSummary, grand5y };
+}
+function CommissionPlanner() {
+    const [modeKey, setModeKey] = useState(DEFAULTS.modeKey);
+    const [premiumPerInstallment, setPremiumPerInstallment] = useState(DEFAULTS.premiumPerInstallment);
+    const [casesPerMonth, setCasesPerMonth] = useState(DEFAULTS.casesPerMonth);
+    const [rates, setRates] = useState(DEFAULTS.rates);
+    const [retentionTiers, setRetentionTiers] = useState(DEFAULTS.retentionTiers);
+    const [tenureStart, setTenureStart] = useState(DEFAULTS.tenureStart);
+    const [persistency, setPersistency] = useState(DEFAULTS.persistency);
+    const [saveStatus, setSaveStatus] = useState(""); // ข้อความแจ้งเตือนสถานะบันทึก/ล้าง
+    const [loaded, setLoaded] = useState(false);
+    const [resetToken, setResetToken] = useState(0); // เปลี่ยนค่านี้เพื่อบังคับให้ช่องกรอกรีเฟรชค่าใหม่จริงๆ
+    const [goalKey, setGoalKey] = useState("house");
+    const [goalAmount, setGoalAmount] = useState(3000000);
+    const [goalYears, setGoalYears] = useState("5");
+    const [ex, setEx] = useState(EX_DEFAULT);
+    const [um, setUm] = useState(UM_DEFAULT);
+    const [tab, setTab] = useState("agent");
+    const [otherAwards, setOtherAwards] = useState(Array(20).fill(0));
+    const setOther = (i, v) => setOtherAwards((a) => { const n = [...a]; n[i] = v; return n; });
+    const upd = (k, v) => setEx((p) => ({ ...p, [k]: v }));
+    // โหลดข้อมูลล่าสุดที่บันทึกไว้ทันทีที่เปิดเครื่องมือ
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await window.storage.get(STORAGE_KEY, false);
+                if (res && res.value) {
+                    const saved = JSON.parse(res.value);
+                    if (saved.modeKey)
+                        setModeKey(saved.modeKey);
+                    if (typeof saved.premiumPerInstallment === "number")
+                        setPremiumPerInstallment(saved.premiumPerInstallment);
+                    if (typeof saved.casesPerMonth === "number")
+                        setCasesPerMonth(saved.casesPerMonth);
+                    if (Array.isArray(saved.rates))
+                        setRates(saved.rates);
+                    if (Array.isArray(saved.retentionTiers))
+                        setRetentionTiers(saved.retentionTiers);
+                    if (typeof saved.tenureStart === "number")
+                        setTenureStart(saved.tenureStart);
+                    if (typeof saved.persistency === "number")
+                        setPersistency(saved.persistency);
+                    if (saved.ex && typeof saved.ex === "object")
+                        setEx({ ...EX_DEFAULT, ...saved.ex });
+                    if (Array.isArray(saved.otherAwards)) setOtherAwards(saved.otherAwards);
+                    if (saved.um && typeof saved.um === "object") setUm(normUm(saved.um));
+                    if (saved.tab === "um" || saved.tab === "agent") setTab(saved.tab);
+                    if (saved.goalKey) setGoalKey(saved.goalKey);
+                    if (typeof saved.goalAmount === "number") setGoalAmount(saved.goalAmount);
+                    if (saved.goalYears) setGoalYears(saved.goalYears);
+                }
+            }
+            catch (e) {
+                // ยังไม่เคยบันทึกไว้ก่อนหน้านี้ ใช้ค่าเริ่มต้นตามปกติ
+            }
+            finally {
+                setResetToken((t) => t + 1);
+                setLoaded(true);
+            }
+        })();
+    }, []);
+    // บันทึกอัตโนมัติทุกครั้งที่มีการแก้ไขข้อมูล (หน่วงเล็กน้อยเพื่อไม่ยิงถี่เกินไประหว่างพิมพ์)
+    useEffect(() => {
+        if (!loaded)
+            return; // รอโหลดข้อมูลเดิมให้เสร็จก่อน กันไม่ให้ค่าเริ่มต้นทับข้อมูลที่บันทึกไว้
+        const t = setTimeout(async () => {
+            try {
+                const payload = { modeKey, premiumPerInstallment, casesPerMonth, rates, retentionTiers, persistency, tenureStart, ex, goalKey, goalAmount, goalYears, otherAwards, um, tab };
+                await window.storage.set(STORAGE_KEY, JSON.stringify(payload), false);
+                setSaveStatus("บันทึกอัตโนมัติแล้ว ✓");
+                setTimeout(() => setSaveStatus(""), 1500);
+            }
+            catch (e) {
+                // เงียบไว้ ไม่ต้องรบกวนผู้ใช้ถ้าบันทึกไม่สำเร็จชั่วคราว
+            }
+        }, 600);
+        return () => clearTimeout(t);
+    }, [modeKey, premiumPerInstallment, casesPerMonth, rates, JSON.stringify(retentionTiers), persistency, tenureStart, JSON.stringify(ex), JSON.stringify(otherAwards), JSON.stringify(um), tab, goalKey, goalAmount, goalYears, loaded]);
+    // ล้างข้อมูล: รีเซ็ตค่าบนหน้าจอกลับเป็นค่าเริ่มต้น และลบข้อมูลที่บันทึกไว้ทั้งหมด
+    const handleClearAll = async () => {
+        setModeKey(CLEARED.modeKey);
+        setPremiumPerInstallment(CLEARED.premiumPerInstallment);
+        setCasesPerMonth(CLEARED.casesPerMonth);
+        setRates(CLEARED.rates);
+        setRetentionTiers(CLEARED.retentionTiers);
+        setTenureStart(CLEARED.tenureStart);
+        setPersistency(CLEARED.persistency);
+        setEx(EX_DEFAULT);
+        setOtherAwards(Array(20).fill(0));
+        setUm(UM_DEFAULT);
+        try {
+            await window.storage.delete(STORAGE_KEY, false);
+        }
+        catch (e) {
+            // ไม่มีข้อมูลบันทึกไว้อยู่แล้วก็ไม่เป็นไร
+        }
+        setResetToken((t) => t + 1); // บังคับให้ทุกช่องกรอกแสดงค่าใหม่จริงๆ ไม่ค้างค่าเดิม
+        setSaveStatus("ล้างข้อมูลหน้าจอแล้ว");
+        setTimeout(() => setSaveStatus(""), 3000);
+    };
+    // Ordered refs for "กด Enter ไปช่องถัดไป": 0 premium, 1 cases, 2-6 rates[0..4]
+    const fieldRefs = useRef([]);
+    const focusField = (i) => {
+        var _a;
+        const el = fieldRefs.current[i];
+        if (el)
+            el.focus();
+        else
+            (_a = fieldRefs.current[i - 1]) === null || _a === void 0 ? void 0 : _a.blur();
+    };
+    const mode = MODES.find((m) => m.key === modeKey) || MODES[0];
+    const safePremium = premiumPerInstallment || 0;
+    const safeCases = casesPerMonth || 0;
+    const safeRates = rates.map((r) => r || 0);
+    // อัตราคงอยู่ (ตรงกับแอป Recruiting): ใช้ลดคอมฯ ปีต่อ (ปี 2-5) ทุกปีเท่ากัน · ปีแรกของตัวแทนใหม่ (อายุงาน 1 ปี) ใช้ 75% ตามระเบียบ เฉพาะคำนวณโบนัส
+    const safePersist = persistency || 0;
+    const M = useMemo(() => computeAgent({ safePremium, modeKey, safeRates, safeCases, safePersist, tenureStart }), [safePremium, modeKey, JSON.stringify(safeRates), safeCases, safePersist, tenureStart]);
+    const { keepRatio, yearPersist, annualPremiumPerCase, perCase, monthReport, totalCommission5y, totalPremium5y, yearGroups, yearlyStacked, chunkSizeMonths, totalPeriodsAll, periodTrend, quarters, annualBonusByYear, safeTenureStart, careerByYear, masterYearSummary, grand5y } = M;
+    const goalNeed = useMemo(() => {
+        const goal = goalAmount || 0, N = parseInt(goalYears, 10) || 5;
+        if (!goal) return 0;
+        for (let c = 1; c <= 60; c++) {
+            const m = computeAgent({ safePremium, modeKey, safeRates, safeCases: c, safePersist, tenureStart });
+            if (m.masterYearSummary.slice(0, N).reduce((t, y) => t + y.grandTotal, 0) >= goal) return c;
+        }
+        return -1;
+    }, [goalAmount, goalYears, safePremium, modeKey, JSON.stringify(safeRates), safePersist, tenureStart]);
     const setRate = (idx, val) => {
         const next = [...rates];
         next[idx] = val;
@@ -1229,8 +1325,8 @@ function CommissionPlanner() {
         next[idx] = val;
         setRetentionTiers(next);
     };
-    return (React.createElement("div", { style: { background: `linear-gradient(180deg, ${PAPER} 0%, #ffffff 220px)`, minHeight: "100vh" } },
-        React.createElement("div", { style: { fontFamily: "'Noto Sans Thai', -apple-system, 'Segoe UI', system-ui, sans-serif", maxWidth: 640, margin: "0 auto", padding: "18px 14px 40px", color: INK } },
+    return (React.createElement("div", { style: { background: "#E6EEF4", minHeight: "100vh" } },
+        React.createElement("div", { style: { fontFamily: "'Mali', 'Noto Sans Thai', -apple-system, system-ui, sans-serif", fontWeight: 500, maxWidth: 1180, margin: "0 auto", padding: "18px 14px 40px", color: INK } },
             React.createElement("div", { style: { background: `linear-gradient(120deg, ${NAVY} 0%, ${SKY_DEEP} 100%)`, borderRadius: 18, padding: "14px 16px", color: "#fff", marginBottom: 16, boxShadow: "0 8px 24px rgba(11,46,79,0.18)", display: "flex", alignItems: "center", gap: 14 } },
                 React.createElement("img", { src: LOGO_B64, alt: "Agent Income Planner", style: { width: 72, height: 72, borderRadius: 16, boxShadow: "0 4px 12px rgba(0,0,0,0.3)", objectFit: "cover", flexShrink: 0 } }),
                 React.createElement("div", { style: { flex: 1, minWidth: 0 } },
@@ -1238,7 +1334,7 @@ function CommissionPlanner() {
                         React.createElement(Wallet, { size: 13 }),
                         " \u0E1B\u0E49\u0E32\u0E40\u0E1B\u0E47\u0E14 CFP\u00AE \u00B7 \u0E41\u0E1C\u0E19\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49\u0E15\u0E31\u0E27\u0E41\u0E17\u0E19"),
                     React.createElement("div", { style: { fontSize: 19, fontWeight: 800, marginTop: 3, lineHeight: 1.3 } }, "\u0E41\u0E1C\u0E19\u0E04\u0E33\u0E19\u0E27\u0E13\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49\u0E08\u0E32\u0E01\u0E01\u0E32\u0E23\u0E02\u0E32\u0E22\u0E15\u0E48\u0E2D\u0E40\u0E19\u0E37\u0E48\u0E2D\u0E07"),
-                    React.createElement("div", { style: { fontWeight: 600, fontSize: 14.5, color: "#EAF7FF", marginTop: 2 } }, "\u0E02\u0E32\u0E22\u0E17\u0E38\u0E01\u0E40\u0E14\u0E37\u0E2D\u0E19 \u00B7 \u0E14\u0E39\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49 60 \u0E40\u0E14\u0E37\u0E2D\u0E19 (5 \u0E1B\u0E35)"))),
+                    React.createElement("div", { style: { fontWeight: 600, fontSize: 15, color: "#EAF7FF", marginTop: 2 } }, "\u0E02\u0E32\u0E22\u0E17\u0E38\u0E01\u0E40\u0E14\u0E37\u0E2D\u0E19 \u00B7 \u0E14\u0E39\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49 60 \u0E40\u0E14\u0E37\u0E2D\u0E19 (5 \u0E1B\u0E35)"))),
             React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 14 } },
                 React.createElement("div", { style: { fontSize: 19, fontWeight: 700, color: saveStatus ? GREEN_DEEP : MUTE, minHeight: 18 } }, saveStatus || "บันทึกข้อมูลอัตโนมัติทุกครั้งที่แก้ไข"),
                 React.createElement("button", { onClick: handleClearAll, style: {
@@ -1254,80 +1350,44 @@ function CommissionPlanner() {
                     } }, "\u0E25\u0E49\u0E32\u0E07\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25")),
             React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, background: "#fff", padding: 5, borderRadius: 14, border: "1px solid #DCE9F0", marginBottom: 16, position: "sticky", top: 6, zIndex: 20, boxShadow: "0 4px 14px rgba(11,46,79,0.08)" } },
                 [["agent", "ตัวแทน"], ["um", "ผู้จัดการหน่วย (UM)"]].map(([k, t]) => React.createElement("button", { key: k, onClick: () => { setTab(k); window.scrollTo({ top: 0, behavior: "smooth" }); }, style: { padding: "11px 6px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 18, fontWeight: 800, background: tab === k ? NAVY : "transparent", color: tab === k ? "#fff" : NAVY } }, t))),
-            tab === "um" ? React.createElement(UmTab, { um, setUm, monthReport, quarters, masterYearSummary, safeCases, safePersist, resetToken }) : React.createElement(React.Fragment, null,
-            React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", boxShadow: "0 2px 10px rgba(11,46,79,0.05)", marginBottom: 16 } },
-                React.createElement("div", { style: { fontSize: 21, color: MUTE, fontWeight: 700, marginBottom: 6 } }, "1. \u0E23\u0E39\u0E1B\u0E41\u0E1A\u0E1A\u0E01\u0E32\u0E23\u0E0A\u0E33\u0E23\u0E30\u0E40\u0E1A\u0E35\u0E49\u0E22"),
-                React.createElement(Segmented, { options: MODES, value: modeKey, onChange: setModeKey }),
-                React.createElement("div", { style: { height: 14 } }),
-                React.createElement(NumField, { key: `premium-${resetToken}`, label: `2. เบี้ยประกันต่องวด (${mode.label}) ต่อ 1 ราย`, value: premiumPerInstallment, onChange: setPremiumPerInstallment, suffix: "\u0E1A\u0E32\u0E17/\u0E07\u0E27\u0E14", step: 100, inputRef: (el) => (fieldRefs.current[0] = el), onEnterNext: () => focusField(1) }),
-                React.createElement("div", { style: { fontSize: 19.5, color: MUTE, marginTop: 4 } },
-                    "\u0E40\u0E17\u0E35\u0E22\u0E1A\u0E40\u0E17\u0E48\u0E32\u0E40\u0E1A\u0E35\u0E49\u0E22\u0E23\u0E32\u0E22\u0E1B\u0E35\u0E15\u0E48\u0E2D\u0E23\u0E32\u0E22 \u2248 ",
-                    THB(annualPremiumPerCase),
-                    " \u0E1A\u0E32\u0E17/\u0E1B\u0E35"),
-                React.createElement("div", { style: { height: 14 } }),
-                React.createElement(NumField, { key: `cases-${resetToken}`, label: "3. \u0E08\u0E33\u0E19\u0E27\u0E19\u0E23\u0E32\u0E22\u0E17\u0E35\u0E48\u0E15\u0E49\u0E2D\u0E07\u0E01\u0E32\u0E23\u0E02\u0E32\u0E22\u0E15\u0E48\u0E2D\u0E40\u0E14\u0E37\u0E2D\u0E19", value: casesPerMonth, onChange: setCasesPerMonth, suffix: "\u0E23\u0E32\u0E22/\u0E40\u0E14\u0E37\u0E2D\u0E19", step: 1, inputRef: (el) => (fieldRefs.current[1] = el), onEnterNext: () => focusField(2) }),
-                React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginTop: 8 } },
-                    [{ n: 2, t: "เริ่มต้น" }, { n: 4, t: "ตั้งใจ" }, { n: 8, t: "มืออาชีพ" }].map((p) => {
-                        const on = casesPerMonth === p.n;
-                        return React.createElement("button", { key: p.n, onClick: () => setCasesPerMonth(p.n), style: { padding: "8px 4px", borderRadius: 12, cursor: "pointer", border: on ? `2px solid ${GREEN_DEEP}` : "2px solid #DCE9F0", background: on ? GREEN_DEEP : "#fff", color: on ? "#fff" : NAVY, lineHeight: 1.25 } },
-                            React.createElement("div", { style: { fontSize: 18, fontWeight: 800 } }, p.t),
-                            React.createElement("div", { style: { fontSize: 15, fontWeight: 600, opacity: 0.9 } }, `${p.n} ราย/เดือน`));
-                    })),
-                React.createElement("div", { style: { height: 16 } }),
-                React.createElement("div", { style: { fontSize: 21, color: MUTE, fontWeight: 700, marginBottom: 6 } }, "\u0E2D\u0E31\u0E15\u0E23\u0E32\u0E04\u0E48\u0E32\u0E04\u0E2D\u0E21\u0E21\u0E34\u0E0A\u0E0A\u0E31\u0E48\u0E19\u0E15\u0E32\u0E21\u0E1B\u0E35\u0E01\u0E23\u0E21\u0E18\u0E23\u0E23\u0E21\u0E4C (%)"),
-                React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6 } },
-                    React.createElement(NumField, { key: `rate0-${resetToken}`, label: "\u0E1B\u0E35 1", value: rates[0], onChange: (v) => setRate(0, v), suffix: "%", compact: true, step: 0.5, inputRef: (el) => (fieldRefs.current[2] = el), onEnterNext: () => focusField(3) }),
-                    React.createElement(NumField, { key: `rate1-${resetToken}`, label: "\u0E1B\u0E35 2", value: rates[1], onChange: (v) => setRate(1, v), suffix: "%", compact: true, step: 0.5, inputRef: (el) => (fieldRefs.current[3] = el), onEnterNext: () => focusField(4) }),
-                    React.createElement(NumField, { key: `rate2-${resetToken}`, label: "\u0E1B\u0E35 3", value: rates[2], onChange: (v) => setRate(2, v), suffix: "%", compact: true, step: 0.5, inputRef: (el) => (fieldRefs.current[4] = el), onEnterNext: () => focusField(5) }),
-                    React.createElement(NumField, { key: `rate3-${resetToken}`, label: "\u0E1B\u0E35 4", value: rates[3], onChange: (v) => setRate(3, v), suffix: "%", compact: true, step: 0.5, inputRef: (el) => (fieldRefs.current[5] = el), onEnterNext: () => focusField(6) }),
-                    React.createElement(NumField, { key: `rate4-${resetToken}`, label: "\u0E1B\u0E35 5", value: rates[4], onChange: (v) => setRate(4, v), suffix: "%", compact: true, step: 0.5, inputRef: (el) => (fieldRefs.current[6] = el), onEnterNext: () => focusField(7) })),
-                React.createElement("div", { style: { height: 14 } }),
-                React.createElement(NumField, { key: `tenure-${resetToken}`, label: "\u0E2D\u0E32\u0E22\u0E38\u0E07\u0E32\u0E19\u0E15\u0E31\u0E27\u0E41\u0E17\u0E19\u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19 (\u0E19\u0E31\u0E1A\u0E16\u0E36\u0E07\u0E1B\u0E35\u0E17\u0E35\u0E48 1 \u0E02\u0E2D\u0E07\u0E41\u0E1C\u0E19\u0E19\u0E35\u0E49)", value: tenureStart, onChange: setTenureStart, suffix: "\u0E1B\u0E35", step: 1, inputRef: (el) => (fieldRefs.current[7] = el), onEnterNext: () => focusField(8) }),
-                React.createElement("div", { style: { fontSize: 18, color: MUTE, marginTop: 4 } }, "\u0E43\u0E0A\u0E49\u0E04\u0E33\u0E19\u0E27\u0E13\u0E1C\u0E25\u0E1B\u0E23\u0E30\u0E42\u0E22\u0E0A\u0E19\u0E4C\u0E08\u0E32\u0E01\u0E0A\u0E31\u0E49\u0E19\u0E2D\u0E32\u0E0A\u0E35\u0E1E (CAREER) \u2014 \u0E2D\u0E32\u0E22\u0E38\u0E07\u0E32\u0E19\u0E08\u0E30\u0E40\u0E1E\u0E34\u0E48\u0E21\u0E02\u0E36\u0E49\u0E19\u0E1B\u0E35\u0E25\u0E30 1 \u0E1B\u0E35\u0E15\u0E32\u0E21\u0E17\u0E35\u0E48\u0E08\u0E33\u0E25\u0E2D\u0E07 \u0E15\u0E49\u0E2D\u0E07\u0E21\u0E35\u0E2D\u0E32\u0E22\u0E38\u0E07\u0E32\u0E19\u0E15\u0E31\u0E27\u0E41\u0E17\u0E19\u0E2D\u0E22\u0E48\u0E32\u0E07\u0E19\u0E49\u0E2D\u0E22 2 \u0E1B\u0E35\u0E02\u0E36\u0E49\u0E19\u0E44\u0E1B\u0E08\u0E36\u0E07\u0E08\u0E30\u0E40\u0E02\u0E49\u0E32\u0E40\u0E01\u0E13\u0E11\u0E4C"),
-                modeKey === "monthly" && (React.createElement("div", { style: { marginTop: 16, background: PAPER, borderRadius: 12, padding: 12, display: "flex", gap: 10, alignItems: "flex-start" } },
-                    React.createElement(Info, { size: 16, color: SKY_DEEP, style: { marginTop: 2, flexShrink: 0 } }),
-                    React.createElement("div", { style: { fontSize: 21, color: MUTE, lineHeight: 1.5 } },
-                        React.createElement("b", { style: { color: NAVY } }, "\u0E40\u0E07\u0E37\u0E48\u0E2D\u0E19\u0E44\u0E02\u0E01\u0E32\u0E23\u0E2B\u0E31\u0E01\u0E1A\u0E31\u0E0D\u0E0A\u0E35\u0E23\u0E32\u0E22\u0E40\u0E14\u0E37\u0E2D\u0E19 (\u0E1B\u0E35\u0E41\u0E23\u0E01):"),
-                        " \u0E40\u0E14\u0E37\u0E2D\u0E19\u0E41\u0E23\u0E01\u0E2B\u0E31\u0E01\u0E25\u0E48\u0E27\u0E07\u0E2B\u0E19\u0E49\u0E32 2 \u0E40\u0E14\u0E37\u0E2D\u0E19 \u0E41\u0E25\u0E49\u0E27\u0E40\u0E27\u0E49\u0E19 1 \u0E40\u0E14\u0E37\u0E2D\u0E19 \u0E08\u0E32\u0E01\u0E19\u0E31\u0E49\u0E19\u0E2B\u0E31\u0E01\u0E1B\u0E01\u0E15\u0E34\u0E17\u0E38\u0E01\u0E40\u0E14\u0E37\u0E2D\u0E19\u0E15\u0E32\u0E21\u0E1B\u0E01\u0E15\u0E34 (\u0E1B\u0E35\u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38\u0E2B\u0E31\u0E01\u0E1B\u0E01\u0E15\u0E34\u0E17\u0E38\u0E01\u0E40\u0E14\u0E37\u0E2D\u0E19)")))),
-            (() => {
-                const Y = masterYearSummary;
-                const perMonth = Y.map((y) => y.grandTotal / 12);
-                const m1 = perMonth[0] || 0, m5 = perMonth[4] || 0;
-                const growth = m1 > 0 ? m5 / m1 : 0;
-                const y5 = Y[4] || { byYear: [0,0,0,0,0], grandTotal: 0 };
-                const renewal5 = y5.byYear[1] + y5.byYear[2] + y5.byYear[3] + y5.byYear[4] + (y5.careerBenefit || 0);
-                const renewalPct = y5.grandTotal > 0 ? (renewal5 / y5.grandTotal) * 100 : 0;
-                const extras5y = grand5y.quarterlyBonus + grand5y.annualBonus + grand5y.collectBonus + grand5y.careerBenefit + grand5y.qualReward + grand5y.joining;
-                const maxM = Math.max(...perMonth, 1);
-                const k = (v) => v >= 1e6 ? (v / 1e6).toFixed(2) + " ล้าน" : v >= 1e3 ? (v / 1e3).toFixed(1) + "K" : THB(v);
-                const mini = (label, value, unit, note, accent) => React.createElement("div", { style: { background: "#fff", borderRadius: 14, padding: "12px 14px", border: "1px solid #E4EEF3", borderTop: `4px solid ${accent}` } },
-                    React.createElement("div", { style: { fontSize: 17, color: MUTE, fontWeight: 700, lineHeight: 1.35 } }, label),
-                    React.createElement("div", { style: { fontSize: "clamp(20px, 6vw, 30px)", fontWeight: 800, color: INK, marginTop: 4, lineHeight: 1.1, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, value,
-                        React.createElement("span", { style: { fontSize: 16, fontWeight: 700, color: MUTE, marginLeft: 4 } }, unit)),
-                    note && React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 4, lineHeight: 1.4 } }, note));
-                return React.createElement("div", { style: { marginBottom: 16 } },
-                    React.createElement("div", { style: { background: NAVY, borderRadius: 20, padding: "18px 18px 16px", color: "#fff", boxShadow: "0 10px 28px rgba(0,45,98,0.25)" } },
-                        React.createElement("div", { style: { fontSize: 18, color: "#BFE6F8", fontWeight: 700 } }, "รายได้รวม 5 ปี (คอมฯ + โบนัส + CAREER)"),
-                        React.createElement("div", { style: { fontSize: 46, fontWeight: 800, lineHeight: 1.1, marginTop: 4, letterSpacing: -0.5, fontVariantNumeric: "tabular-nums" } },
-                            THB(grand5y.grandTotal),
-                            React.createElement("span", { style: { fontSize: 20, fontWeight: 700, marginLeft: 6, color: "#BFE6F8" } }, "บาท")),
-                        React.createElement("div", { style: { fontSize: 18, marginTop: 4, color: "#fff" } }, "เฉลี่ย ",
-                            React.createElement("b", { style: { color: GREEN } }, THB(grand5y.grandTotal / 60)), " บาท/เดือน"),
-                        React.createElement("div", { style: { height: 1, background: "rgba(255,255,255,0.15)", margin: "14px 0 12px" } }),
-                        React.createElement("div", { style: { fontSize: 16.5, color: "#BFE6F8", fontWeight: 700, marginBottom: 8 } },
-                            "รายได้เฉลี่ยต่อเดือน แต่ละปี",
-                            growth > 1.05 && React.createElement("span", { style: { color: GREEN, marginLeft: 6 } }, `· ปีที่ 5 โตเป็น ${growth.toFixed(1)} เท่าของปีแรก`)),
-                        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6, alignItems: "end", height: 120 } },
-                            perMonth.map((v, i) => React.createElement("div", { key: i, style: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" } },
-                                React.createElement("div", { style: { fontSize: 14, fontWeight: 800, marginBottom: 4, color: i === 4 ? GREEN : "#fff", whiteSpace: "nowrap" } }, k(v)),
-                                React.createElement("div", { style: { width: "70%", height: `${Math.max((v / maxM) * 72, 3)}px`, borderRadius: "6px 6px 2px 2px", background: i === 4 ? GREEN : SKY, transition: "height .4s ease" } }),
-                                React.createElement("div", { style: { fontSize: 14, marginTop: 5, color: "#BFE6F8" } }, `ปี ${i + 1}`))))),
-                    React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, marginTop: 10 } },
-                        mini("รายได้/เดือน ในปีที่ 5", THB(m5), "บาท", `ปีแรกเดือนละ ${THB(m1)} บาท`, GREEN),
-                        mini("รายได้ต่ออายุในปีที่ 5", renewalPct.toFixed(0), "%", "มาจากลูกค้าเดิม ไม่ต้องขายใหม่", SKY),
-                        mini("โบนัส + CAREER รวม 5 ปี", THB(extras5y), "บาท", "นอกเหนือจากค่าคอมมิชชัน", GOLD),
-                        mini("ครอบครัวที่ได้ดูแล", THB(safeCases * 60), "ราย", "กรมธรรม์สะสมใน 5 ปี", NAVY)));
-            })(),
+            tab === "um" ? React.createElement(UmTab, { um, setUm, monthReport, quarters, masterYearSummary, safeCases, safePersist }) : React.createElement(React.Fragment, null,
+            React.createElement("div", { className: "dash" },
+                (() => {
+                    const series = [
+                        { name: "คอมฯ ปีแรก", color: SKY, total: grand5y.byYear[0] },
+                        { name: "คอมฯ ต่ออายุ", color: "#8FD8F8", total: grand5y.byYear[1] + grand5y.byYear[2] + grand5y.byYear[3] + grand5y.byYear[4] },
+                        { name: "โบนัส/รางวัล", color: "#F2B544", total: grand5y.quarterlyBonus + grand5y.annualBonus + grand5y.collectBonus + grand5y.qualReward + grand5y.joining },
+                        { name: "CAREER", color: GREEN, total: grand5y.careerBenefit },
+                    ];
+                    const data = masterYearSummary.map((y) => ({ label: `ปี ${y.calYear}`, values: [y.byYear[0], y.byYear[1] + y.byYear[2] + y.byYear[3] + y.byYear[4], y.quarterlyBonus + y.annualBonus + y.collectBonus + y.qualReward + y.joining, y.careerBenefit] }));
+                    return React.createElement("div", { style: CARD_SUM },
+                        React.createElement("div", { style: { fontSize: 18, color: "#CDEBFA", fontWeight: 700 } }, "รายได้รวม 5 ปี (คอมฯ + โบนัส + CAREER)"),
+                        React.createElement("div", { style: { fontSize: 46, fontWeight: 700, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" } }, THB(grand5y.grandTotal),
+                            React.createElement("span", { style: { fontSize: 20, color: "#CDEBFA", marginLeft: 6 } }, "บาท")),
+                        React.createElement("div", { style: { height: 1, background: "rgba(255,255,255,0.18)", margin: "12px 0" } }),
+                        React.createElement("div", { style: { fontSize: 16.5, color: "#CDEBFA", fontWeight: 700, marginBottom: 6 } }, "รายได้ทั้งปี (หน่วย: 1,000 บาท)"),
+                        React.createElement(YearBars, { data, series }));
+                })(),
+                React.createElement("div", { style: CARD_CTRL },
+                    React.createElement("div", { style: { fontSize: 21, fontWeight: 700, color: NAVY, marginBottom: 8 } }, "ปรับแผนการขาย"),
+                    React.createElement("div", { style: { fontSize: 17, color: NAVY, fontWeight: 700, marginBottom: 6 } }, "รูปแบบการชำระเบี้ย"),
+                    React.createElement(Segmented, { options: MODES, value: modeKey, onChange: setModeKey }),
+                    React.createElement("div", { style: { height: 12 } }),
+                    React.createElement(NumField, { key: `premium-${resetToken}`, label: `เบี้ยประกันต่องวด (${mode.label}) ต่อ 1 ราย`, value: premiumPerInstallment, onChange: setPremiumPerInstallment, suffix: "บาท/งวด", step: 100, inputRef: (el) => (fieldRefs.current[0] = el), onEnterNext: () => focusField(2) }),
+                    React.createElement("div", { style: { fontSize: 16, color: MUTE, marginTop: 4 } }, `เทียบเท่าเบี้ยรายปีต่อราย ≈ ${THB(annualPremiumPerCase)} บาท/ปี`),
+                    React.createElement(Slider, { label: "จำนวนรายที่ขายต่อเดือน", value: casesPerMonth, onChange: setCasesPerMonth, min: 1, max: Math.max(20, casesPerMonth || 0), unit: "ราย", color: NAVY }),
+                    React.createElement(Slider, { label: "อัตราคงอยู่ของกรมธรรม์", value: persistency, onChange: setPersistency, min: 50, max: 100, unit: "%", color: GREEN_DEEP }),
+                    React.createElement("div", { style: { fontSize: 15, color: MUTE, marginTop: 4, lineHeight: 1.45 } }, "ใช้ลดคอมฯ ปีต่ออายุ (ปี 2–5) และใช้คำนวณโบนัสรายปี, CAREER และค่าส่งเสริมความคงอยู่ในแทป UM · ปีแรกของตัวแทนใหม่ใช้ 75% ตามระเบียบ เฉพาะคำนวณโบนัส"),
+                    React.createElement(MiniToggle, { title: "ตั้งค่าอัตราค่าคอมฯ และอายุงาน" },
+                        React.createElement("div", { style: { fontSize: 16.5, color: NAVY, fontWeight: 700, marginBottom: 6 } }, "อัตราค่าคอมมิชชันตามปีกรมธรรม์ (%)"),
+                        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6 } },
+                            [0, 1, 2, 3, 4].map((i) => React.createElement(NumField, { key: `rate${i}-${resetToken}`, label: `ปี ${i + 1}`, value: rates[i], onChange: (v) => setRate(i, v), suffix: "%", compact: true, step: 0.5, inputRef: (el) => (fieldRefs.current[2 + i] = el), onEnterNext: () => focusField(3 + i) }))),
+                        React.createElement("div", { style: { height: 12 } }),
+                        React.createElement(NumField, { key: `tenure-${resetToken}`, label: "อายุงานตัวแทนปัจจุบัน (นับถึงปีที่ 1 ของแผนนี้)", value: tenureStart, onChange: setTenureStart, suffix: "ปี", step: 1, inputRef: (el) => (fieldRefs.current[7] = el), onEnterNext: () => focusField(8) }),
+                        React.createElement("div", { style: { fontSize: 15, color: MUTE, marginTop: 4 } }, "ใช้คำนวณ CAREER — อายุงานเพิ่มปีละ 1 ปีตามที่จำลอง ต้องมีอายุงาน 2 ปีขึ้นไปจึงเข้าเกณฑ์"),
+                        modeKey === "monthly" && React.createElement("div", { style: { marginTop: 10, background: "#fff", borderRadius: 12, padding: 10, fontSize: 15.5, color: MUTE, lineHeight: 1.5 } },
+                            React.createElement("b", { style: { color: NAVY } }, "เงื่อนไขการหักบัญชีรายเดือน (ปีแรก): "),
+                            "เดือนแรกหักล่วงหน้า 2 เดือน แล้วเว้น 1 เดือน จากนั้นหักปกติทุกเดือน (ปีต่ออายุหักปกติทุกเดือน)")))),
             (() => {
                 const GOALS = [
                     { key: "house", label: "บ้าน", amt: 3000000 },
@@ -1335,38 +1395,36 @@ function CommissionPlanner() {
                     { key: "edu", label: "ทุนการศึกษาลูก", amt: 1000000 },
                     { key: "custom", label: "กำหนดเอง", amt: null },
                 ];
-                const months = (parseInt(goalYears, 10) || 5) * 12;
-                // ค่าคอมฯ สะสมต่อการขาย 1 ราย/เดือน ภายใน N เดือน (ไม่รวมโบนัส = ตัวเลขแบบระมัดระวัง)
-                let basePerCase = 0;
-                for (let m = 1; m <= months; m++) for (let r = 1; r <= m; r++) basePerCase += ((perCase[r - 1] && perCase[r - 1].commission) || 0) * (perCase[r - 1] && perCase[r - 1].policyYear > 1 ? keepRatio : 1);
                 const goal = goalAmount || 0;
-                const need = basePerCase > 0 && goal > 0 ? Math.ceil(goal / basePerCase) : 0;
-                let reachMonth = 0, cum = 0;
-                for (let m = 0; m < 60; m++) { cum += monthReport[m].total; if (!reachMonth && goal > 0 && cum >= goal) reachMonth = m + 1; }
-                const reachText = !goal ? "" : reachMonth ? `ปีที่ ${Math.ceil(reachMonth / 12)} (เดือนที่ ${reachMonth})` : "ยังไม่ถึงภายใน 5 ปี";
-                return React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginBottom: 16 } },
-                    React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 21, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 } },
-                        React.createElement(Award, { size: 16, color: GOLD }), " เป้าหมายชีวิตของคุณ"),
-                    React.createElement(Segmented, { options: GOALS.map((g) => ({ key: g.key, label: g.label })), value: goalKey, cols: 2, onChange: (k) => { setGoalKey(k); const g = GOALS.find((x) => x.key === k); if (g && g.amt) setGoalAmount(g.amt); } }),
-                    React.createElement("div", { style: { height: 12 } }),
-                    React.createElement(NumField, { label: "ต้องการเงิน", value: goalAmount, onChange: (v) => { setGoalAmount(v); setGoalKey("custom"); }, suffix: "บาท" }),
-                    React.createElement("div", { style: { fontSize: 19, color: MUTE, fontWeight: 700, margin: "12px 0 6px" } }, "ภายในกี่ปี"),
-                    React.createElement(Segmented, { options: ["1", "2", "3", "4", "5"].map((y) => ({ key: y, label: `${y} ปี` })), value: goalYears, cols: 5, onChange: setGoalYears }),
-                    goal > 0 && React.createElement("div", { style: { marginTop: 14, background: PAPER, borderRadius: 14, padding: 14 } },
-                        React.createElement("div", { style: { fontSize: 18, color: MUTE, fontWeight: 700 } }, `ต้องขายประมาณ`),
-                        React.createElement("div", { style: { fontSize: 38, fontWeight: 800, color: NAVY, lineHeight: 1.15 } }, THB(need),
-                            React.createElement("span", { style: { fontSize: 18, fontWeight: 700, color: MUTE, marginLeft: 6 } }, "ราย/เดือน")),
-                        React.createElement("div", { style: { fontSize: 17, color: MUTE, marginTop: 6, lineHeight: 1.5 } },
-                            `ถ้าขาย ${safeCases} ราย/เดือนตามที่กรอกไว้ จะถึงเป้า: `,
-                            React.createElement("b", { style: { color: reachMonth ? GREEN_DEEP : "#C0392B" } }, reachText)),
-                        need > 0 && safeCases !== need && React.createElement("button", { onClick: () => setCasesPerMonth(need), style: { marginTop: 10, width: "100%", padding: "10px", borderRadius: 12, border: "none", background: NAVY, color: "#fff", fontWeight: 800, fontSize: 18, cursor: "pointer" } }, `ใช้ ${need} ราย/เดือน ในแผนนี้`),
-                        React.createElement("div", { style: { fontSize: 15, color: MUTE, marginTop: 8 } }, "* คิดจากค่าคอมมิชชันอย่างเดียว ยังไม่รวมโบนัสและ CAREER (เป็นตัวเลขแบบระมัดระวัง)")));
+                const N = parseInt(goalYears, 10) || 5;
+                // ใช้รายได้รวมทุกช่องทาง (คอมฯ + โบนัส + CAREER + Joining) ให้ตรงกับยอดรวมด้านบน
+                const incomeN = masterYearSummary.slice(0, N).reduce((s, y) => s + y.grandTotal, 0);
+                const qt = quarterTotals(M);
+                let reachQ = 0, cum = 0;
+                for (let i = 0; i < 20; i++) { cum += qt[i]; if (!reachQ && goal > 0 && cum >= goal) reachQ = i + 1; }
+                const ok = reachQ > 0 && reachQ <= N * 4;
+                const reachText = !goal ? "" : reachQ ? `ปีที่ ${Math.ceil(reachQ / 4)} ไตรมาส ${((reachQ - 1) % 4) + 1}` : "ยังไม่ถึงภายใน 5 ปี";
+                return React.createElement("div", { style: CARD_GOAL },
+                    React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, fontWeight: 700, color: NAVY, fontSize: 21, marginBottom: 10 } },
+                        React.createElement(Award, { size: 20, color: GOLD }), "เป้าหมายชีวิต"),
+                    React.createElement("div", { className: "goalgrid" },
+                        React.createElement("div", null,
+                            React.createElement(Segmented, { options: GOALS.map((g) => ({ key: g.key, label: g.label })), value: goalKey, cols: 4, onChange: (k) => { setGoalKey(k); const g = GOALS.find((x) => x.key === k); if (g && g.amt) setGoalAmount(g.amt); } }),
+                            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 10, marginTop: 10, alignItems: "end" } },
+                                React.createElement(NumField, { label: "ต้องการเงิน", value: goalAmount, onChange: (v) => { setGoalAmount(v); setGoalKey("custom"); }, suffix: "บาท", compact: true }),
+                                React.createElement("div", null,
+                                    React.createElement("div", { style: { fontSize: 16, color: NAVY, fontWeight: 700, marginBottom: 4 } }, "ภายในกี่ปี"),
+                                    React.createElement("select", { value: String(N), onChange: (e) => setGoalYears(e.target.value), style: { ...SEL, fontSize: 18, padding: "10px 8px" } },
+                                        [1, 2, 3, 4, 5].map((y) => React.createElement("option", { key: y, value: String(y) }, `${y} ปี`)))))),
+                        goal > 0 && React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: "12px 14px", border: `2px solid ${ok ? GREEN_DEEP : "#E39B2E"}` } },
+                            React.createElement("div", { style: { fontSize: 16, color: MUTE, fontWeight: 600 } }, `ขาย ${safeCases} ราย/เดือน → รายได้ใน ${N} ปี`),
+                            React.createElement("div", { style: { fontSize: 32, fontWeight: 700, color: NAVY, lineHeight: 1.2, fontVariantNumeric: "tabular-nums" } }, THB(incomeN), React.createElement("span", { style: { fontSize: 17, color: MUTE, marginLeft: 6 } }, "บาท")),
+                            React.createElement("div", { style: { fontSize: 18, fontWeight: 700, marginTop: 4, color: ok ? GREEN_DEEP : "#C0392B" } }, ok ? `✓ ถึงเป้าใน${reachText}` : `ยังไม่ถึงเป้าภายใน ${N} ปี${reachQ ? ` (ถึงเป้า${reachText})` : ""}`),
+                            !ok && goalNeed > 0 && React.createElement("button", { onClick: () => setCasesPerMonth(goalNeed), style: { marginTop: 10, width: "100%", padding: "10px", borderRadius: 12, border: "none", background: NAVY, color: "#fff", fontWeight: 700, fontSize: 17.5, cursor: "pointer" } }, `ต้องขาย ${goalNeed} ราย/เดือน · แตะเพื่อใช้ค่านี้`),
+                            !ok && goalNeed === -1 && React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 6 } }, "ต้องขายมากกว่า 60 ราย/เดือน ลองเพิ่มเบี้ยหรือระยะเวลา"))));
             })(),
-            React.createElement("div", { style: { fontSize: 19, color: MUTE, marginBottom: 16, textAlign: "center" } },
-                "* \u0E2A\u0E21\u0E21\u0E15\u0E34\u0E10\u0E32\u0E19: \u0E02\u0E32\u0E22 ",
-                safeCases,
-                " \u0E23\u0E32\u0E22/\u0E40\u0E14\u0E37\u0E2D\u0E19 \u0E15\u0E48\u0E2D\u0E40\u0E19\u0E37\u0E48\u0E2D\u0E07\u0E17\u0E38\u0E01\u0E40\u0E14\u0E37\u0E2D\u0E19 \u0E41\u0E25\u0E30\u0E01\u0E23\u0E21\u0E18\u0E23\u0E23\u0E21\u0E4C\u0E17\u0E38\u0E01\u0E09\u0E1A\u0E31\u0E1A\u0E04\u0E07\u0E2D\u0E22\u0E39\u0E48\u0E04\u0E23\u0E1A 100% (\u0E44\u0E21\u0E48\u0E21\u0E35\u0E02\u0E32\u0E14\u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38)"),
-            React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginBottom: 16 } },
+            React.createElement(Detail, { title: "รายได้รายไตรมาส แยกรายเดือน", sub: "สมมติเริ่มขายเดือนมกราคม · โบนัสรายปีและ CAREER อยู่ในไตรมาส 4 · แตะปีเพื่อขยาย" }, yearGroups.map((g, i) => React.createElement(YearQuarterBlock, { key: g.calYear, calYear: g.calYear, rows: g.rows, quarters: quarters.filter((q) => q.calYear === g.calYear), ab: annualBonusByYear[i], career: careerByYear[i], other: otherAwards, onOther: setOther, defaultOpen: g.calYear === 1 }))),
+            React.createElement(Detail, { title: "องค์ประกอบรายได้ต่อปี", sub: "ค่าคอมฯ แยกตามปีกรมธรรม์ที่มา" }, React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginBottom: 16 } },
                 React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 21, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 } },
                     React.createElement(Calendar, { size: 16, color: SKY_DEEP }),
                     " \u0E2D\u0E07\u0E04\u0E4C\u0E1B\u0E23\u0E30\u0E01\u0E2D\u0E1A\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49\u0E15\u0E48\u0E2D\u0E1B\u0E35 (\u0E15\u0E32\u0E21\u0E17\u0E35\u0E48\u0E21\u0E32\u0E1B\u0E35\u0E01\u0E23\u0E21\u0E18\u0E23\u0E23\u0E21\u0E4C)"),
@@ -1401,79 +1459,8 @@ function CommissionPlanner() {
                         React.createElement(XAxis, { dataKey: "name", tick: { fontSize: 17, fill: MUTE }, interval: Math.max(Math.floor(periodTrend.length / 12), 0) }),
                         React.createElement(YAxis, { tick: { fontSize: 17, fill: MUTE }, width: 62 }),
                         React.createElement(Tooltip, { content: React.createElement(ChartTooltip, null), cursor: { stroke: "#B9D3E2", strokeWidth: 1 } }),
-                        React.createElement(Line, { type: "monotone", dataKey: "\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49", stroke: GREEN_DEEP, strokeWidth: 2.5, dot: mode.installments <= 2 })))),
-            React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginBottom: 16 } },
-                React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 22, marginBottom: 6 } }, "อัตราคงอยู่ของกรมธรรม์ (ปีที่ 2 ขึ้นไป)"),
-                React.createElement("div", { style: { fontSize: 19, color: MUTE, marginBottom: 12, lineHeight: 1.5 } }, "ใช้ลดคอมมิชชั่นปีต่อ (ปี 2–5) ทุกปีเท่ากัน และใช้คำนวณโบนัสรายปีและ CAREER · ปีแรกของตัวแทนใหม่ (อายุงาน 1 ปี) ใช้ 75% ตามระเบียบ เฉพาะคำนวณโบนัส"),
-                React.createElement(NumField, { key: `persist-${resetToken}`, label: "อัตราคงอยู่", value: persistency, onChange: setPersistency, suffix: "%" })),
-            React.createElement("div", { style: {
-                    background: `linear-gradient(120deg, ${NAVY} 0%, ${SKY_DEEP} 100%)`,
-                    borderRadius: 18,
-                    padding: "18px 16px",
-                    marginBottom: 12,
-                    boxShadow: "0 8px 24px rgba(0,45,98,0.18)",
-                } },
-                React.createElement("div", { style: { color: "#D6EEFB", fontSize: 19, fontWeight: 700 } }, "\u0E20\u0E32\u0E1E\u0E23\u0E27\u0E21\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49 5 \u0E1B\u0E35 (\u0E17\u0E38\u0E01\u0E0A\u0E48\u0E2D\u0E07\u0E17\u0E32\u0E07\u0E23\u0E27\u0E21\u0E01\u0E31\u0E19)"),
-                React.createElement("div", { style: { color: "#fff", fontSize: 30, fontWeight: 800, marginTop: 4 } },
-                    THB(grand5y.grandTotal),
-                    " \u0E1A\u0E32\u0E17"),
-                React.createElement("div", { style: { display: "flex", gap: 6, marginTop: 14 } }, masterYearSummary.map((y) => (React.createElement("div", { key: y.calYear, style: { flex: 1, padding: "8px 4px", borderRadius: 12, border: "1.5px solid rgba(255,255,255,0.35)", textAlign: "center" } },
-                    React.createElement("div", { style: { color: "#D6EEFB", fontSize: 16.5, fontWeight: 700 } },
-                        "\u0E1B\u0E35 ",
-                        y.calYear),
-                    React.createElement("div", { style: { color: "#fff", fontSize: 19.5, fontWeight: 800, marginTop: 2 } }, THB(y.grandTotal))))))),
-            React.createElement("div", { style: { fontSize: 18, color: MUTE, textAlign: "center", marginBottom: 10 } }, "\u0E40\u0E25\u0E37\u0E48\u0E2D\u0E19\u0E14\u0E39\u0E15\u0E32\u0E23\u0E32\u0E07\u0E14\u0E49\u0E32\u0E19\u0E25\u0E48\u0E32\u0E07\u0E0B\u0E49\u0E32\u0E22-\u0E02\u0E27\u0E32 \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E40\u0E17\u0E35\u0E22\u0E1A\u0E17\u0E31\u0E49\u0E07 5 \u0E1B\u0E35\u0E1E\u0E23\u0E49\u0E2D\u0E21\u0E01\u0E31\u0E19"),
-            React.createElement("div", { style: { background: "#fff", borderRadius: 16, border: "1px solid #E4EEF3", marginBottom: 16, overflow: "hidden", boxShadow: "0 2px 10px rgba(0,45,98,0.05)" } },
-                React.createElement("div", { style: { overflowX: "auto" } },
-                    React.createElement("table", { style: { borderCollapse: "collapse", fontSize: 18, minWidth: 780 } },
-                        React.createElement("thead", null,
-                            React.createElement("tr", null,
-                                React.createElement("th", { style: { position: "sticky", left: 0, zIndex: 2, background: PAPER, padding: "12px 14px", textAlign: "left", color: NAVY, fontWeight: 800, borderBottom: "2px solid #DCE9F0", minWidth: 190 } }, "\u0E23\u0E32\u0E22\u0E01\u0E32\u0E23"),
-                                masterYearSummary.map((y) => (React.createElement("th", { key: y.calYear, style: { background: NAVY, color: "#fff", padding: "12px 14px", textAlign: "right", fontWeight: 800, minWidth: 130 } },
-                                    "\u0E1B\u0E35\u0E17\u0E35\u0E48 ",
-                                    y.calYear))),
-                                React.createElement("th", { style: { background: GOLD, color: "#fff", padding: "12px 14px", textAlign: "right", fontWeight: 800, minWidth: 140 } }, "\u0E23\u0E27\u0E21 5 \u0E1B\u0E35"))),
-                        React.createElement("tbody", null,
-                            [0, 1, 2, 3, 4].map((idx) => (React.createElement("tr", { key: idx, style: { borderTop: "1px solid #EEF4F8" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: "#fff", padding: "10px 14px", color: MUTE, fontWeight: 600 } },
-                                    "\u0E04\u0E2D\u0E21\u0E21\u0E34\u0E0A\u0E0A\u0E31\u0E48\u0E19\u0E1B\u0E35\u0E17\u0E35\u0E48 ",
-                                    idx + 1,
-                                    idx === 0 ? " (ใหม่)" : " (ต่ออายุ)"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", color: y.byYear[idx] > 0 ? INK : "#4E6B84", fontWeight: 700 } }, THB(y.byYear[idx])))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", color: grand5y.byYear[idx] > 0 ? NAVY : "#4E6B84", fontWeight: 800 } }, THB(grand5y.byYear[idx]))))),
-                            React.createElement("tr", { style: { borderTop: "2px solid #DCE9F0" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: PAPER, padding: "10px 14px", color: NAVY, fontWeight: 800 } }, "\u0E23\u0E27\u0E21\u0E04\u0E2D\u0E21\u0E21\u0E34\u0E0A\u0E0A\u0E31\u0E48\u0E19"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", background: PAPER, color: NAVY, fontWeight: 800 } }, THB(y.commissionSubtotal)))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", background: PAPER, color: NAVY, fontWeight: 800 } }, THB(grand5y.commissionSubtotal))),
-                            React.createElement("tr", { style: { borderTop: "2px solid #DCE9F0" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: "#fff", padding: "10px 14px", color: MUTE, fontWeight: 600 } }, "\u0E42\u0E1A\u0E19\u0E31\u0E2A\u0E44\u0E15\u0E23\u0E21\u0E32\u0E2A"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", color: y.quarterlyBonus > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 700 } }, THB(y.quarterlyBonus)))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", color: grand5y.quarterlyBonus > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 800 } }, THB(grand5y.quarterlyBonus))),
-                            React.createElement("tr", { style: { borderTop: "1px solid #EEF4F8" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: "#fff", padding: "10px 14px", color: MUTE, fontWeight: 600 } }, "\u0E42\u0E1A\u0E19\u0E31\u0E2A\u0E23\u0E32\u0E22\u0E1B\u0E35 (\u0E2A\u0E38\u0E17\u0E18\u0E34)"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", color: y.annualBonus > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 700 } }, THB(y.annualBonus)))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", color: grand5y.annualBonus > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 800 } }, THB(grand5y.annualBonus))),
-                            React.createElement("tr", { style: { borderTop: "1px solid #EEF4F8" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: "#fff", padding: "10px 14px", color: MUTE, fontWeight: 600 } }, "\u0E23\u0E32\u0E07\u0E27\u0E31\u0E25\u0E40\u0E01\u0E47\u0E1A\u0E40\u0E1A\u0E35\u0E49\u0E22\u0E23\u0E32\u0E22\u0E1B\u0E35"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", color: y.collectBonus > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 700 } }, THB(y.collectBonus)))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", color: grand5y.collectBonus > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 800 } }, THB(grand5y.collectBonus))),
-                            React.createElement("tr", { style: { borderTop: "1px solid #EEF4F8" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: "#fff", padding: "10px 14px", color: MUTE, fontWeight: 600 } }, "\u0E1C\u0E25\u0E1B\u0E23\u0E30\u0E42\u0E22\u0E0A\u0E19\u0E4C\u0E0A\u0E31\u0E49\u0E19\u0E2D\u0E32\u0E0A\u0E35\u0E1E (CAREER)"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", color: y.careerBenefit > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 700 } }, THB(y.careerBenefit)))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", color: grand5y.careerBenefit > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 800 } }, THB(grand5y.careerBenefit))),
-                            React.createElement("tr", { style: { borderTop: "1px solid #EEF4F8" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: "#fff", padding: "10px 14px", color: MUTE, fontWeight: 600 } }, "เงินรางวัลคุณวุฒิไตรมาส"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", color: y.qualReward > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 700 } }, THB(y.qualReward)))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", color: grand5y.qualReward > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 800 } }, THB(grand5y.qualReward))),
-                            React.createElement("tr", { style: { borderTop: "1px solid #EEF4F8" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: "#fff", padding: "10px 14px", color: MUTE, fontWeight: 600 } }, "Joining Bonus"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "10px 14px", textAlign: "right", color: y.joining > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 700 } }, THB(y.joining)))),
-                                React.createElement("td", { style: { padding: "10px 14px", textAlign: "right", color: grand5y.joining > 0 ? GOLD_TEXT : "#4E6B84", fontWeight: 800 } }, THB(grand5y.joining))),
-                            React.createElement("tr", { style: { borderTop: "2px solid #DCE9F0" } },
-                                React.createElement("td", { style: { position: "sticky", left: 0, zIndex: 1, background: GREEN_DEEP, padding: "12px 14px", color: "#EAF9DC", fontWeight: 800 } }, "\u0E23\u0E27\u0E21\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49\u0E17\u0E31\u0E49\u0E07\u0E1B\u0E35"),
-                                masterYearSummary.map((y) => (React.createElement("td", { key: y.calYear, style: { padding: "12px 14px", textAlign: "right", background: GREEN_DEEP, color: "#fff", fontWeight: 800 } }, THB(y.grandTotal)))),
-                                React.createElement("td", { style: { padding: "12px 14px", textAlign: "right", background: GREEN_DEEP, color: "#fff", fontWeight: 800 } }, THB(grand5y.grandTotal))))))),
-            React.createElement("div", { style: {
+                        React.createElement(Line, { type: "monotone", dataKey: "\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49", stroke: GREEN_DEEP, strokeWidth: 2.5, dot: mode.installments <= 2 }))))),
+            React.createElement(Detail, { title: "ค่าคอมมิชชันรวม 5 ปี แยกตามปีกรมธรรม์", sub: "" }, React.createElement("div", { style: {
                     background: "#fff",
                     borderRadius: 16,
                     border: `2px solid ${GOLD}`,
@@ -1547,11 +1534,8 @@ function CommissionPlanner() {
                         React.createElement("span", { style: { color: "#FFF6E8", fontWeight: 800, fontSize: 20.5 } }, "\u0E23\u0E27\u0E21\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14 5 \u0E1B\u0E35"),
                         React.createElement("span", { style: { color: "#fff", fontWeight: 800, fontSize: 24 } },
                             THB(grand5y.grandTotal),
-                            " \u0E1A\u0E32\u0E17")))),
-            React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 22.5, margin: "18px 0 4px" } }, "รายได้รายไตรมาส แยกรายเดือน"),
-            React.createElement("div", { style: { fontSize: 16, color: MUTE, marginBottom: 10, lineHeight: 1.5 } }, "สมมติเริ่มขายเดือนมกราคม · โบนัสรายปี รางวัลเก็บเบี้ย และ CAREER แสดงในไตรมาส 4 · แตะปีเพื่อขยาย"),
-            yearGroups.map((g, i) => React.createElement(YearQuarterBlock, { key: g.calYear, calYear: g.calYear, rows: g.rows, quarters: quarters.filter((q) => q.calYear === g.calYear), ab: annualBonusByYear[i], career: careerByYear[i], other: otherAwards, onOther: setOther, defaultOpen: g.calYear === 1 })),
-            React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginTop: 6, marginBottom: 16 } },
+                            " \u0E1A\u0E32\u0E17"))))),
+            React.createElement(Detail, { title: "รายละเอียดโบนัสและ CAREER รายปี", sub: "เกณฑ์และผลที่ได้แต่ละปี" }, React.createElement("div", { style: { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginTop: 6, marginBottom: 16 } },
                 React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 22.5, marginBottom: 4, display: "flex", alignItems: "center", gap: 6 } },
                     React.createElement(Award, { size: 17, color: GOLD }),
                     " \u0E1C\u0E25\u0E1B\u0E23\u0E30\u0E42\u0E22\u0E0A\u0E19\u0E4C\u0E2D\u0E37\u0E48\u0E19: \u0E40\u0E07\u0E34\u0E19\u0E23\u0E32\u0E07\u0E27\u0E31\u0E25\u0E15\u0E31\u0E27\u0E41\u0E17\u0E19 (\u0E42\u0E1A\u0E19\u0E31\u0E2A)"),
@@ -1629,101 +1613,7 @@ function CommissionPlanner() {
                     " \u0E04\u0E33\u0E19\u0E27\u0E13\u0E08\u0E32\u0E01 % \u0E02\u0E2D\u0E07 RYC (\u0E04\u0E2D\u0E21\u0E21\u0E34\u0E0A\u0E0A\u0E31\u0E48\u0E19\u0E1B\u0E35\u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38 \u0E1B\u0E35 2-5 \u0E02\u0E2D\u0E07\u0E1B\u0E35\u0E19\u0E31\u0E49\u0E19 \u0E40\u0E17\u0E48\u0E32\u0E19\u0E31\u0E49\u0E19 \u0E44\u0E21\u0E48\u0E23\u0E27\u0E21\u0E04\u0E2D\u0E21\u0E2F \u0E1B\u0E35\u0E41\u0E23\u0E01) \u0E15\u0E32\u0E21\u0E0A\u0E48\u0E27\u0E07\u0E2D\u0E32\u0E22\u0E38\u0E07\u0E32\u0E19\u0E15\u0E31\u0E27\u0E41\u0E17\u0E19 (2-5 \u0E1B\u0E35=60%, 6-10 \u0E1B\u0E35=70%, 11 \u0E1B\u0E35\u0E02\u0E36\u0E49\u0E19\u0E44\u0E1B=80%) \u0E42\u0E14\u0E22\u0E15\u0E49\u0E2D\u0E07\u0E1C\u0E48\u0E32\u0E19\u0E40\u0E01\u0E13\u0E11\u0E4C\u0E04\u0E23\u0E1A 4 \u0E02\u0E49\u0E2D\u0E02\u0E2D\u0E07\u0E2D\u0E32\u0E22\u0E38\u0E07\u0E32\u0E19\u0E1B\u0E35\u0E19\u0E31\u0E49\u0E19\u0E01\u0E48\u0E2D\u0E19 (\u0E23\u0E1A\u0E02.4/2541) \u2014 ",
                     React.createElement("b", { style: { color: NAVY } }, "\u0E1B\u0E35\u0E17\u0E35\u0E48 1 \u0E02\u0E2D\u0E07\u0E41\u0E1C\u0E19\u0E08\u0E30\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35 RYC \u0E40\u0E2A\u0E21\u0E2D \u0E40\u0E1E\u0E23\u0E32\u0E30\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E25\u0E39\u0E01\u0E04\u0E49\u0E32\u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38 \u0E08\u0E36\u0E07\u0E44\u0E14\u0E49 CAREER = 0 \u0E1A\u0E32\u0E17\u0E43\u0E19\u0E1B\u0E35\u0E41\u0E23\u0E01\u0E41\u0E21\u0E49\u0E08\u0E30\u0E1C\u0E48\u0E32\u0E19\u0E40\u0E01\u0E13\u0E11\u0E4C\u0E2D\u0E37\u0E48\u0E19\u0E04\u0E23\u0E1A"),
                     React.createElement("br", null),
-                    "* \u0E15\u0E31\u0E27\u0E40\u0E25\u0E02\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14\u0E40\u0E1B\u0E47\u0E19\u0E1B\u0E23\u0E30\u0E21\u0E32\u0E13\u0E01\u0E32\u0E23\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E27\u0E32\u0E07\u0E41\u0E1C\u0E19 \u0E44\u0E21\u0E48\u0E43\u0E0A\u0E48\u0E22\u0E2D\u0E14\u0E08\u0E23\u0E34\u0E07\u0E08\u0E32\u0E01\u0E23\u0E30\u0E1A\u0E1A\u0E1A\u0E23\u0E34\u0E29\u0E31\u0E17")),
-            (() => {
-                const max = Math.max(...EXEC_LEVELS.map((l) => l.s + (l.q * l.p) / 100));
-                const card = { background: "#fff", borderRadius: 16, padding: 16, border: "1px solid #E4EEF3", marginTop: 16 };
-                const h = (icon, t) => React.createElement("div", { style: { fontWeight: 800, color: NAVY, fontSize: 21, display: "flex", alignItems: "center", gap: 6 } }, icon, " ", t);
-                const sub = (t) => React.createElement("div", { style: { fontSize: 19, color: MUTE, fontWeight: 700, margin: "14px 0 6px" } }, t);
-                const yIdx = (parseInt(ex.year, 10) || 1) - 1;
-                const ownFycQ = Math.round(((annualBonusByYear[yIdx] && annualBonusByYear[yIdx].fyc) || 0) / 4);
-                const R = calcExec(ex, ownFycQ);
-                const Y = masterYearSummary[yIdx];
-                const agentItems = [
-                    { k: "ค่าคอมมิชชันปีแรก (FYC)", v: Y.byYear[0], d: "จากลูกค้าใหม่ที่ขายในปีนี้" },
-                    { k: "ค่าคอมมิชชันปีต่ออายุ (ปี 2-5)", v: Y.byYear[1] + Y.byYear[2] + Y.byYear[3] + Y.byYear[4], d: "จากลูกค้าเดิมที่ขายไว้ปีก่อนๆ" },
-                    { k: "โบนัสรายไตรมาส", v: Y.quarterlyBonus, d: "" },
-                    { k: "โบนัสรายปี (หลังหักโบนัสไตรมาส)", v: Y.annualBonus, d: "" },
-                    { k: "รางวัลเก็บเบี้ยรายปี", v: Y.collectBonus, d: modeKey === "annual" ? "10% ของคอมฯ ปีแรก" : "เฉพาะชำระเบี้ยแบบรายปี" },
-                    { k: "ผลประโยชน์ชั้นอาชีพ (CAREER)", v: Y.careerBenefit, d: `อายุงาน ${Y.careerTenure} ปี` },
-                    { k: "เงินรางวัลคุณวุฒิไตรมาส", v: Y.qualReward, d: "ผ่านคุณวุฒิไตรมาสติดต่อกัน + เกณฑ์ทั้งปี" },
-                    { k: "Joining Bonus", v: Y.joining, d: "เฉพาะตัวแทนใหม่ 4 เดือนแรก" },
-                ];
-                const agentTotal = agentItems.reduce((s, x) => s + x.v, 0);
-                const execTotal = R ? R.total : 0;
-                const grand = agentTotal + execTotal;
-                const row = (x, i) => React.createElement("div", { key: i, style: { display: "flex", justifyContent: "space-between", gap: 10, padding: "8px 0", borderTop: "1px dashed #DCE9F0", opacity: x.v > 0 ? 1 : 0.55 } },
-                    React.createElement("div", { style: { minWidth: 0 } },
-                        React.createElement("div", { style: { fontSize: 17, fontWeight: 700, color: INK } }, x.k),
-                        x.d && React.createElement("div", { style: { fontSize: 14.5, color: MUTE, lineHeight: 1.4 } }, x.d)),
-                    React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: INK, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, THB(x.v)));
-                const block = (title, color, items, total) => React.createElement("div", { style: { marginTop: 12, borderLeft: `5px solid ${color}`, paddingLeft: 12 } },
-                    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 2 } },
-                        React.createElement("div", { style: { fontSize: 19, fontWeight: 800, color } }, title),
-                        React.createElement("div", { style: { fontSize: 21, fontWeight: 800, color, fontVariantNumeric: "tabular-nums" } }, THB(total))),
-                    items.map(row));
-                const chip = (label, on, onClick) => React.createElement("button", { key: label, onClick, style: { padding: "8px 4px", borderRadius: 10, cursor: "pointer", fontSize: 16, fontWeight: 700, border: on ? `2px solid ${SKY_DEEP}` : "2px solid #DCE9F0", background: on ? SKY_DEEP : "#fff", color: on ? "#fff" : NAVY } }, label);
-                return React.createElement(React.Fragment, null,
-                    // ---------- เส้นทางสู่ผู้บริหาร ----------
-                    React.createElement("div", { style: card },
-                        h(React.createElement(TrendingUp, { size: 16, color: GREEN_DEEP }), "เส้นทางสู่ผู้บริหารตัวแทน"),
-                        React.createElement("div", { style: { fontSize: 16.5, color: MUTE, margin: "4px 0 10px", lineHeight: 1.5 } }, "รายได้บริหารขั้นต่ำต่อเดือนเมื่อทีมทำ CFYC ได้ตามโควต้า (เงินเดือน + ค่าขยายงาน) แตะระดับเพื่อคำนวณรายได้ผู้บริหารแบบครบทุกรายการด้านล่าง"),
-                        EXEC_LEVELS.map((l, i) => {
-                            const inc = l.s + (l.q * l.p) / 100, on = ex.level === l.key;
-                            return React.createElement("button", { key: l.key, onClick: () => setEx((p) => ({ ...p, level: l.key, cfyc: null, units: null })), style: { display: "block", width: "100%", textAlign: "left", cursor: "pointer", font: "inherit", padding: "10px 8px", margin: "2px 0", borderRadius: 10, border: on ? `2px solid ${NAVY}` : "2px solid transparent", background: on ? PAPER : "transparent" } },
-                                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 } },
-                                    React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: INK } }, l.n,
-                                        React.createElement("span", { style: { fontSize: 15, fontWeight: 600, color: MUTE, marginLeft: 6 } }, EXEC_GROUPS[l.g].name)),
-                                    React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: NAVY, whiteSpace: "nowrap" } }, THB(inc),
-                                        React.createElement("span", { style: { fontSize: 14, fontWeight: 600, color: MUTE, marginLeft: 4 } }, "บาท/ด."))),
-                                React.createElement("div", { style: { height: 8, background: "#EEF4F8", borderRadius: 4, marginTop: 6, overflow: "hidden" } },
-                                    React.createElement("div", { style: { width: `${(inc / max) * 100}%`, height: "100%", background: i < 2 ? SKY : i < 4 ? SKY_DEEP : i < 6 ? GREEN_DEEP : GOLD, borderRadius: 4 } })),
-                                React.createElement("div", { style: { fontSize: 15, color: MUTE, marginTop: 5, lineHeight: 1.45 } }, `เงินเดือน ${THB(l.s)} + ค่าขยายงาน ${l.p}% ของ CFYC ${THB(l.q)}/ด. · ทีม: ${l.team}`));
-                        })),
-                    // ---------- ข้อมูลผู้บริหาร ----------
-                    React.createElement("div", { style: card },
-                        h(React.createElement(Award, { size: 16, color: GOLD }), "ข้อมูลสำหรับคำนวณรายได้ผู้บริหาร"),
-                        sub("ตำแหน่งผู้บริหาร"),
-                        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 6 } },
-                            [{ key: "none", n: "ตัวแทน" }, ...EXEC_LEVELS].map((l) => chip(l.n, ex.level === l.key, () => setEx((p) => ({ ...p, level: l.key, cfyc: null, units: null }))))),
-                        !R ? React.createElement("div", { style: { fontSize: 16, color: MUTE, marginTop: 10 } }, "เลือกตำแหน่งผู้บริหารเพื่อดูรายได้ส่วนผู้บริหาร") : React.createElement(React.Fragment, null,
-                            React.createElement("div", { style: { height: 12 } }),
-                            React.createElement(NumField, { label: "CFYC ทีมต่อเดือน", value: R.cfyc, onChange: (v) => upd("cfyc", v), suffix: "บาท" }),
-                            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 6, marginTop: 6 } },
-                                [0, 20, 50, 100].map((pct) => chip(pct ? `+${pct}%` : "ตามโควต้า", Math.round(R.cfyc) === Math.round(R.lv.q * (1 + pct / 100)), () => upd("cfyc", Math.round(R.lv.q * (1 + pct / 100)))))),
-                            React.createElement("div", { style: { fontSize: 15.5, color: R.belowQuota ? "#C0392B" : MUTE, marginTop: 4 } }, R.belowQuota ? `ต่ำกว่าโควต้า ${THB(R.lv.q)} บาท/เดือน — ยังไม่ผ่านเกณฑ์ตำแหน่งนี้` : `โควต้า ${THB(R.lv.q)} บาท/เดือน · ทำได้ ${(100 + R.over).toFixed(0)}% ของโควต้า`),
-                            sub("ความยั่งยืนกรมธรรม์ปีที่ 2 (ณ ต.ค.)"),
-                            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 6 } },
-                                [["lt70", "ต่ำกว่า 70%"], ["70", "70%"], ["75", "75%"], ["80", "80%"], ["85", "85%"], ["90", "90%+"]].map(([k, t]) => chip(t, ex.pers === k, () => upd("pers", k)))),
-                            React.createElement("div", { style: { height: 12 } }),
-                            React.createElement(NumField, { label: "FYC ขายเอง+ตัวแทนตรง/ไตรมาส", value: R.fq, onChange: (v) => upd("fycQ", v), suffix: "บาท" }),
-                            React.createElement("div", { style: { fontSize: 15, color: MUTE, marginTop: 4 } }, `ค่าเริ่มต้นใช้ FYC ขายเองจากแผนด้านบน (ปีที่ ${yIdx + 1}) = ${THB(ownFycQ)} บาท/ไตรมาส บวกผลงานตัวแทนตรงเพิ่มได้`),
-                            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 } },
-                                React.createElement(NumField, { label: "ตัวแทนใหม่/ปี", value: ex.newAgents, onChange: (v) => upd("newAgents", v), suffix: "คน", compact: true }),
-                                React.createElement(NumField, { label: "FYC ตัวแทนใหม่/คน/ด.", value: ex.newFyc, onChange: (v) => upd("newFyc", v), suffix: "บาท", compact: true })),
-                            R.lv.units > 0 && React.createElement("div", { style: { marginTop: 12 } },
-                                React.createElement(NumField, { label: "หน่วยใต้สังกัดที่ผลงานครบโควต้า", value: R.units, onChange: (v) => upd("units", v), suffix: "หน่วย" })),
-                            sub("ตัวแทนในทีมที่มีผลงานต่อไตรมาส (ขายใหม่ ≥ 2 ราย/ไตรมาส)"),
-                            React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(5, minmax(0,1fr))", gap: 6 } },
-                                AGENT_RANKS.map((r, i) => React.createElement(NumField, { key: r.n, label: r.n, value: ex.agents[i], compact: true, suffix: "คน", onChange: (v) => { const a = [...ex.agents]; a[i] = v || 0; upd("agents", a); } }))),
-                            React.createElement("div", { style: { fontSize: 14.5, color: MUTE, marginTop: 4 } }, "เกณฑ์ FYC/คน/ไตรมาส: สตาร์ 60,000 · ระดับ 1 36,000 · ระดับ 2 29,000 · ระดับ 3 22,000 · ระดับ 4 15,000"),
-                            React.createElement("div", { style: { height: 12 } }),
-                            React.createElement(NumField, { label: "ค่านายหน้าปีต่ออายุทีม (ปี 2-6)/ปี", value: ex.ryc, onChange: (v) => upd("ryc", v), suffix: "บาท" }))),
-                    // ---------- สรุปรายได้ทั้งหมด ----------
-                    React.createElement("div", { style: { ...card, border: `2px solid ${NAVY}` } },
-                        h(React.createElement(Wallet, { size: 16, color: NAVY }), "สรุปรายได้ทั้งหมดต่อปี แยกทุกรายการ"),
-                        sub("รายได้ส่วนตัวแทน ใช้ข้อมูลของปีที่"),
-                        React.createElement(Segmented, { options: ["1", "2", "3", "4", "5"].map((y) => ({ key: y, label: `ปี ${y}` })), value: ex.year, cols: 5, onChange: (y) => upd("year", y) }),
-                        block("ก. รายได้ส่วนตัวแทน", SKY_DEEP, agentItems, agentTotal),
-                        R && block(`ข. รายได้ส่วนผู้บริหาร (${R.lv.n})`, GREEN_DEEP, R.items, execTotal),
-                        React.createElement("div", { style: { marginTop: 16, background: NAVY, color: "#fff", borderRadius: 14, padding: 14 } },
-                            React.createElement("div", { style: { fontSize: 17, color: "#BFE6F8", fontWeight: 700 } }, R ? "รวมรายได้ทั้งหมด (ก + ข) ต่อปี" : "รวมรายได้ทั้งหมดต่อปี"),
-                            React.createElement("div", { style: { fontSize: 38, fontWeight: 800, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" } }, THB(grand),
-                                React.createElement("span", { style: { fontSize: 18, fontWeight: 700, color: "#BFE6F8", marginLeft: 6 } }, "บาท")),
-                            React.createElement("div", { style: { fontSize: 17, marginTop: 2 } }, "เฉลี่ย ", React.createElement("b", { style: { color: GREEN } }, THB(grand / 12)), " บาท/เดือน"),
-                            R && React.createElement("div", { style: { fontSize: 15, color: "#BFE6F8", marginTop: 6 } }, `ตัวแทน ${THB(agentTotal)} + ผู้บริหาร ${THB(execTotal)}`)),
-                        React.createElement("div", { style: { fontSize: 14.5, color: MUTE, marginTop: 10, lineHeight: 1.55 } }, "* อ้างอิงตารางผลประโยชน์ผู้บริหารตัวแทน (รบข.45/2566, รบข.24/2552, พจน.5/2535, รบข.2/2564, รบข.2/2546, รบข.6/2541) ค่าขยายงานและโบนัส 1 คิดจาก CFYC · โบนัสส่วนเกินโควต้าต้องมีความยั่งยืนปีที่ 2 ≥ 70% · ตัวเลขเป็นการประมาณการ ไม่ใช่การรับประกันรายได้")));
-            })(),
+                    "* \u0E15\u0E31\u0E27\u0E40\u0E25\u0E02\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14\u0E40\u0E1B\u0E47\u0E19\u0E1B\u0E23\u0E30\u0E21\u0E32\u0E13\u0E01\u0E32\u0E23\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E27\u0E32\u0E07\u0E41\u0E1C\u0E19 \u0E44\u0E21\u0E48\u0E43\u0E0A\u0E48\u0E22\u0E2D\u0E14\u0E08\u0E23\u0E34\u0E07\u0E08\u0E32\u0E01\u0E23\u0E30\u0E1A\u0E1A\u0E1A\u0E23\u0E34\u0E29\u0E31\u0E17"))),
             React.createElement("div", { style: { fontSize: 19, color: MUTE, textAlign: "center", marginTop: 8, lineHeight: 1.6 } }, "\u0E2D\u0E49\u0E32\u0E07\u0E2D\u0E34\u0E07\u0E2D\u0E31\u0E15\u0E23\u0E32\u0E04\u0E48\u0E32\u0E04\u0E2D\u0E21\u0E21\u0E34\u0E0A\u0E0A\u0E31\u0E48\u0E19\u0E41\u0E25\u0E30\u0E40\u0E07\u0E37\u0E48\u0E2D\u0E19\u0E44\u0E02\u0E42\u0E1A\u0E19\u0E31\u0E2A\u0E08\u0E32\u0E01\u0E15\u0E32\u0E23\u0E32\u0E07\u0E04\u0E48\u0E32\u0E15\u0E2D\u0E1A\u0E41\u0E17\u0E19\u0E15\u0E31\u0E27\u0E41\u0E17\u0E19\u0E25\u0E48\u0E32\u0E2A\u0E38\u0E14 (03-02-2026)")))));
 }
 const root = ReactDOM.createRoot(document.getElementById("root"));
