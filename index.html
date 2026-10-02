@@ -1385,6 +1385,7 @@ function computeAgent({ safePremium, modeKey, safeRates, safeCases, safePersist,
     }, { byYear: [0, 0, 0, 0, 0], commissionSubtotal: 0, quarterlyBonus: 0, annualBonus: 0, collectBonus: 0, careerBenefit: 0, qualReward: 0, joining: 0, grandTotal: 0 });
     return { keepRatio, yearPersist, annualPremiumPerCase, perCase, monthReport, totalCommission5y, totalPremium5y, yearGroups, yearlyStacked, chunkSizeMonths, totalPeriodsAll, periodTrend, quarters, annualBonusByYear, safeTenureStart, careerByYear, masterYearSummary, grand5y, careerY5, promo };
 }
+const APP_VERSION = "2.1 · 02/10/2026";
 function CommissionPlanner() {
     const [modeKey, setModeKey] = useState(DEFAULTS.modeKey);
     const [premiumPerInstallment, setPremiumPerInstallment] = useState(DEFAULTS.premiumPerInstallment);
@@ -1548,7 +1549,7 @@ function CommissionPlanner() {
                     React.createElement("div", { style: { fontWeight: 600, fontSize: 15, color: "#EAF7FF", marginTop: 2 } }, "\u0E02\u0E32\u0E22\u0E17\u0E38\u0E01\u0E40\u0E14\u0E37\u0E2D\u0E19 \u00B7 \u0E14\u0E39\u0E23\u0E32\u0E22\u0E44\u0E14\u0E49 60 \u0E40\u0E14\u0E37\u0E2D\u0E19 (5 \u0E1B\u0E35)"))),
             React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 14 } },
                 React.createElement("div", { style: { fontSize: 19, fontWeight: 700, color: saveStatus ? GREEN_DEEP : MUTE, minHeight: 18 } }, saveStatus || "บันทึกข้อมูลอัตโนมัติทุกครั้งที่แก้ไข"),
-                React.createElement("button", { onClick: handleClearAll, style: {
+                React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 } }, React.createElement("button", { onClick: handleClearAll, style: {
                         padding: "9px 16px",
                         borderRadius: 12,
                         border: `1.5px solid ${NAVY}`,
@@ -1558,7 +1559,8 @@ function CommissionPlanner() {
                         fontSize: 20.5,
                         cursor: "pointer",
                         whiteSpace: "nowrap",
-                    } }, "\u0E25\u0E49\u0E32\u0E07\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25")),
+                    } }, "\u0E25\u0E49\u0E32\u0E07\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25"),
+                    React.createElement("div", { style: { fontSize: 14, color: MUTE, fontWeight: 600 } }, `เวอร์ชัน ${APP_VERSION}`))),
             React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, background: "#fff", padding: 5, borderRadius: 14, border: "1px solid #DCE9F0", marginBottom: 16, position: "sticky", top: 6, zIndex: 20, boxShadow: "0 4px 14px rgba(11,46,79,0.08)" } },
                 [["agent", "ตัวแทน"], ["um", "ผู้จัดการหน่วย (UM)"]].map(([k, t]) => React.createElement("button", { key: k, onClick: () => { setTab(k); window.scrollTo({ top: 0, behavior: "smooth" }); }, style: { padding: "11px 6px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 18, fontWeight: 800, background: tab === k ? NAVY : "transparent", color: tab === k ? "#fff" : NAVY } }, t))),
             tab === "um" ? React.createElement(UmTab, { um, setUm, monthReport, quarters, masterYearSummary, safeCases, safePersist, shareBar }) : React.createElement(React.Fragment, null,
@@ -1592,7 +1594,7 @@ function CommissionPlanner() {
                     ];
                     const data = masterYearSummary.map((y) => ({ label: `ปี ${y.calYear}`, values: [y.byYear[0], y.byYear[1] + y.byYear[2] + y.byYear[3] + y.byYear[4], y.quarterlyBonus + y.annualBonus + y.collectBonus + y.qualReward + y.joining, y.careerBenefit] }));
                     return React.createElement("div", { style: CARD_SUM },
-                        React.createElement("div", { style: { fontSize: 18, color: "#CDEBFA", fontWeight: 700 } }, "รายได้รวม 5 ปี (คอมฯ + โบนัส + CAREER)"),
+                        React.createElement("div", { style: { fontSize: 18, color: "#CDEBFA", fontWeight: 700 } }, "รายได้รวม 5 ปี (ทุกรายการ)"),
                         React.createElement("div", { style: { fontSize: 46, fontWeight: 700, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" } }, THB(grand5y.grandTotal),
                             React.createElement("span", { style: { fontSize: 20, color: "#CDEBFA", marginLeft: 6 } }, "บาท")),
                         React.createElement("div", { style: { marginTop: 8, display: "inline-block", padding: "6px 12px", borderRadius: 12, fontSize: 17, fontWeight: 700, background: promo.year ? "rgba(141,198,63,0.22)" : "rgba(242,181,68,0.2)", color: promo.year ? GREEN : "#F2B544" } },
