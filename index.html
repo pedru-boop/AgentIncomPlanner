@@ -733,7 +733,7 @@ const DEFAULTS = {
     rates: [40, 16, 10, 5, 2],
     retentionTiers: ["90", "90", "90", "90", "90"],
     persistency: 85,
-    tenureStart: 5,
+    tenureStart: 1,
 };
 // ค่าตอนกด "ล้างข้อมูล" — ทุกช่องกรอกว่างเปล่าจริงๆ ไม่มีตัวเลขค้าง
 const CLEARED = {
@@ -797,7 +797,7 @@ const UM_TYPES = [
     { n: "ค่ารักษาทีมงาน", color: "#C9A0F0" }, { n: "ค่าตอบแทนจากขายเองและตัวแทนตรง", color: "#FF8A65" }, { n: "ค่าสร้างและรักษาตัวแทน", color: "#4DD0C4" }, { n: "ค่าส่งเสริมความคงอยู่", color: "#F48FB1" },
 ];
 const MTH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePersist) {
+function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePersist, levelOverride) {
     const A0 = um.agents || 0, NP = um.newPerYear || 0;
     const own = um.includeOwn !== false;
     // ตัวแทนตรง: ทีมตั้งต้นเริ่มเดือนที่ 1 · ตัวแทนใหม่เข้าต้นปีที่ 1-5 ปีละ NP คน · ทุกคนทำผลงานเท่าแผนแทปตัวแทน
@@ -814,7 +814,7 @@ function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePer
     const qCases = safeCases * 3;
     return Array.from({ length: 5 }, (_, y) => {
         const yr = um.years[y];
-        const lv = LV(yr.level), grp = EXEC_GROUPS[lv.g];
+        const lv = LV(levelOverride && levelOverride[y] ? levelOverride[y] : yr.level), grp = EXEC_GROUPS[lv.g];
         const ms = months.slice(12 * y, 12 * y + 12);
         const sum = (k, arr = ms) => arr.reduce((s, m) => s + m[k], 0);
         const ownFyc = sum("own"), teamFyc = sum("team"), directFyc = ownFyc + teamFyc;
@@ -829,20 +829,22 @@ function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePer
         const agentsCount = A0 + NP * (y + 1);
         const minAgents = lv.g === "unit" ? 3 : 5;
         const quotaY = lv.q * 12, belowQuota = cfyc < quotaY, teamOk = agentsCount >= minAgents, structOk = subUnits >= lv.units;
-        const posOk = !belowQuota && teamOk && structOk;
-        const why = belowQuota ? `CFYC ทั้งปียังไม่ถึงโควต้า ${THB(quotaY)}` : !teamOk ? `ตัวแทนตรงยังไม่ถึง ${minAgents} คน` : !structOk ? `หน่วยใต้สังกัดยังไม่ถึง ${lv.units} หน่วยตามตาราง` : "";
+        // เกณฑ์หลัก: CFYC ถึงโควต้า · โครงสร้างทีม/หน่วยเป็นการแจ้งเตือนเท่านั้น
+        const posOk = !belowQuota;
+        const why = belowQuota ? `CFYC ทั้งปียังไม่ถึงโควต้า ${THB(quotaY)} (ขาดอีก ${THB(quotaY - cfyc)})` : "";
+        const warn = [!teamOk ? `ตัวแทนตรง ${agentsCount} คน (ตามตารางควรมี ${minAgents} คน)` : "", !structOk ? `หน่วยใต้สังกัด ${subUnits} หน่วย (ตามตารางควรมี ${lv.units} หน่วย)` : ""].filter(Boolean);
         const over = (cfyc / quotaY - 1) * 100, tier = overTier(over);
-        const bonusWhy = !posOk ? why : tier < 0 ? "CFYC ยังไม่เกินโควต้า" : !persOk ? "อัตราคงอยู่ต่ำกว่า 70%" : "";
+        const bonusWhy = belowQuota ? why : tier < 0 ? "CFYC ยังไม่เกินโควต้า" : !persOk ? "อัตราคงอยู่ต่ำกว่า 70%" : "";
         const items = [];
         // 1. เงินเดือน: CFYC ทบยอดรายเดือน (เริ่มนับใหม่ทุกต้นปี) ทุก ๆ โควต้า 1 เท่า = เงินเดือน 1 เดือน สูงสุดเดือนละ 1 เดือน
         let bank = 0, nSal = 0; const salRows = [];
         cfycM.forEach((c, m) => {
             bank += c; const paid = bank >= lv.q;
             if (paid) { bank -= lv.q; nSal++; }
-            salRows.push([MTH[m], THB(c), THB(bank + (paid ? lv.q : 0)), paid ? `✓ ${THB(lv.s)}` : "-", THB(bank)]);
+            salRows.push([MTH[m], THB(c), paid ? (c >= lv.q ? `✓ ${THB(lv.s)}` : `✓ ${THB(lv.s)} (ยอดสะสมจากเดือนก่อน)`) : "ไม่ได้"]);
         });
         items.push({ g: 0, k: "1. เงินเดือน", v: nSal * lv.s, d: `CFYC ทบยอดรายเดือน ทุก ${THB(lv.q)} ได้ 1 เดือน (สูงสุดเดือนละ 1) → ได้ ${nSal} เดือน × ${THB(lv.s)}`,
-            tbl: { cols: ["เดือน", "CFYC เดือนนี้", "ยอดทบ", "เงินเดือน", "ยอดยกไป"], rows: salRows } });
+            tbl: { cols: ["เดือน", "CFYC เดือนนี้", "เงินเดือน"], rows: salRows } });
         // 2. ค่าขยายงาน
         const q2 = [0, 1, 2, 3].map((qi) => cfycM.slice(qi * 3, qi * 3 + 3).reduce((a, b) => a + b, 0));
         items.push({ g: 1, k: "2. ค่าขยายงาน", v: cfyc * lv.p / 100, d: `${lv.p}% × CFYC ทั้งปี ${THB(cfyc)}`,
@@ -899,7 +901,7 @@ function calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePer
             tbl: ryc ? { cols: ["รายการ", "ค่า"], rows: [["ค่าต่ออายุ ขายเอง", THB(ownR)], ["ค่าต่ออายุ ตัวแทนตรง", THB(teamR)], ["รวม", THB(ryc)], ["อัตรา (คงอยู่ " + safePersist + "%)", `${r8}%`], ["ได้", THB(ryc * r8 / 100)]] } : null });
         const exec = items.reduce((s, x) => s + x.v, 0);
         const byType = UM_TYPES.map((_, gi) => items.filter((x) => x.g === gi).reduce((s, x) => s + x.v, 0));
-        return { y: y + 1, lv, agentsCount, directFyc, subCfycY, subUnits, cfyc, quotaY, posOk, why, over, items, exec, byType, total: exec };
+        return { y: y + 1, lv, agentsCount, ownFyc, teamFyc, directFyc, subCfycY, sub30Y: subCfycY * 0.3, subUnits, cfyc, quotaY, posOk, why, warn, over, items, exec, byType, total: exec };
     });
 }
 const SEL = { width: "100%", padding: "8px 6px", borderRadius: 10, border: "1px solid #BFD3E1", background: "#fff", font: "inherit", fontSize: 16.5, fontWeight: 600, color: NAVY };
@@ -925,7 +927,7 @@ function UmPositionTable({ years, setYear }) {
         const bg = i % 2 ? "#F7FBFE" : "#fff";
         const head = [
             React.createElement("td", { key: "y", rowSpan: span, style: { ...td, fontWeight: 700, color: NAVY, fontSize: 18, whiteSpace: "nowrap", borderTop: "2px solid #D3E2EC" } }, `ปีที่ ${i + 1}`,
-                React.createElement("div", { style: { fontSize: 15, fontWeight: 600, color: units < lv.units ? "#C0392B" : MUTE } }, `${units} หน่วย${lv.units ? ` / ขั้นต่ำ ${lv.units}` : ""}`)),
+                React.createElement("div", { style: { fontSize: 15, fontWeight: 600, color: units < lv.units ? "#9A6B00" : MUTE } }, `${units < lv.units ? "⚠ " : ""}${units} หน่วย${lv.units ? ` / ขั้นต่ำ ${lv.units}` : ""}`)),
             React.createElement("td", { key: "l", rowSpan: span, style: { ...td, minWidth: 110, borderTop: "2px solid #D3E2EC" } },
                 React.createElement("select", { value: yr.level, onChange: (e) => setYear(i, defaultYear(e.target.value)), style: { ...SEL, fontSize: 17, fontWeight: 700 } },
                     EXEC_LEVELS.map((l) => React.createElement("option", { key: l.key, value: l.key }, l.n))))];
@@ -938,7 +940,7 @@ function UmPositionTable({ years, setYear }) {
             rows.push(React.createElement("tr", { key: `${i}-${j}`, style: { background: bg } }, ...(j === 0 ? head : []),
                 React.createElement("td", { style: { ...td, ...top, minWidth: 118 } },
                     React.createElement("select", { value: x.t, onChange: (e) => setYear(i, { ...yr, subs: subs.map((s, jj) => (jj === j ? { t: e.target.value, n: s.n, c: LV(e.target.value).q } : s)) }), style: SEL },
-                        allowed.map((t) => React.createElement("option", { key: t, value: t }, SUB_NAMES[t])))),
+                        Object.keys(SUB_NAMES).map((t) => React.createElement("option", { key: t, value: t }, SUB_NAMES[t])))),
                 React.createElement("td", { style: { ...td, ...top, width: 70 } }, React.createElement(TableNum, { value: x.n, onChange: (v) => upSub(j, "n", v) })),
                 React.createElement("td", { style: { ...td, ...top, minWidth: 104 } }, React.createElement(TableNum, { value: x.c, onChange: (v) => upSub(j, "c", v) })),
                 React.createElement("td", { style: { ...td, ...top, width: 40 } }, iconBtn("×", () => setYear(i, { ...yr, subs: subs.filter((_, jj) => jj !== j) }), "#C0392B"))));
@@ -976,11 +978,12 @@ function UmItem({ x }) {
 function UmYearCard({ r }) {
     const [open, setOpen] = useState(false);
     return React.createElement("div", { style: { border: "1px solid #D3E2EC", borderRadius: 14, overflow: "hidden", marginBottom: 10, background: "#fff" } },
-        React.createElement("button", { onClick: () => setOpen(!open), style: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "12px 14px", background: open ? "#D9EEFA" : "#F2F8FC", border: "none", borderLeft: `6px solid ${r.posOk ? GREEN_DEEP : "#C0392B"}`, cursor: "pointer", textAlign: "left", font: "inherit" } },
+        React.createElement("button", { onClick: () => setOpen(!open), style: { width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "12px 14px", background: open ? "#D9EEFA" : "#F2F8FC", border: "none", borderLeft: `6px solid ${!r.posOk ? "#C0392B" : r.warn.length ? "#E0A100" : GREEN_DEEP}`, cursor: "pointer", textAlign: "left", font: "inherit" } },
             React.createElement("div", { style: { minWidth: 0 } },
                 React.createElement("div", { style: { fontWeight: 700, color: NAVY, fontSize: 20 } }, `ปีที่ ${r.y} · ${r.lv.n}`),
                 React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 2 } }, `ตัวแทนตรง ${r.agentsCount} คน · หน่วยใต้สังกัด ${r.subUnits} · CFYC ${THB(r.cfyc)} (${(100 + r.over).toFixed(0)}% ของโควต้า)`),
-                !r.posOk && React.createElement("div", { style: { fontSize: 15, color: "#C0392B", fontWeight: 600 } }, r.why)),
+                !r.posOk && React.createElement("div", { style: { fontSize: 15, color: "#C0392B", fontWeight: 600 } }, r.why),
+                r.warn.map((w, i) => React.createElement("div", { key: i, style: { fontSize: 15, color: "#9A6B00", fontWeight: 600 } }, `⚠ ${w}`))),
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 6 } },
                 React.createElement("div", { style: { fontSize: 21, fontWeight: 700, color: NAVY, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" } }, THB(r.total)),
                 open ? React.createElement(ChevronUp, { size: 22, color: NAVY }) : React.createElement(ChevronDown, { size: 22, color: NAVY }))),
@@ -989,6 +992,75 @@ function UmYearCard({ r }) {
             r.items.map((x, i) => React.createElement(UmItem, { key: i, x })),
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", borderTop: `2px solid ${NAVY}`, paddingTop: 8, fontWeight: 700, color: NAVY, fontSize: 18 } },
                 React.createElement("span", null, `รวมผลประโยชน์ผู้บริหารปีที่ ${r.y}`), React.createElement("span", null, THB(r.total)))));
+}
+function CfycChart({ rows }) {
+    const H = 230;
+    const segs = [{ k: "ownFyc", n: "ขายเอง", c: SKY }, { k: "teamFyc", n: "ตัวแทนตรง", c: GREEN }, { k: "sub30Y", n: "หน่วยใต้สังกัด (30%)", c: "#F2B544" }];
+    const max = Math.max(...rows.map((r) => Math.max(r.cfyc, r.quotaY)), 1);
+    const tot = segs.map((g) => rows.reduce((s, r) => s + r[g.k], 0));
+    return React.createElement("div", { style: { background: "#fff", borderRadius: 20, border: "1px solid #D3E2EC", overflow: "hidden", marginBottom: 16, boxShadow: "0 2px 10px rgba(11,46,79,0.06)" } },
+        React.createElement("div", { style: { background: NAVY, color: "#fff", padding: "12px 18px" } },
+            React.createElement("div", { style: { fontSize: 21, fontWeight: 700 } }, "ที่มาของ CFYC รายปี"),
+            React.createElement("div", { style: { fontSize: 15.5, color: "#CDEBFA" } }, "หน่วย: 1,000 บาท · เส้นประแดง = โควต้าทั้งปีของตำแหน่งปีนั้น")),
+        React.createElement("div", { style: { padding: "16px 18px 14px" } },
+            React.createElement("div", { style: { display: "grid", gridTemplateColumns: `repeat(${rows.length}, 1fr)`, gap: 12, alignItems: "end" } },
+                rows.map((r) => {
+                    const subPct = r.cfyc ? Math.round((r.sub30Y / r.cfyc) * 100) : 0;
+                    const bh = (r.cfyc / max) * (H - 56), qh = (r.quotaY / max) * (H - 56);
+                    return React.createElement("div", { key: r.y, style: { display: "flex", flexDirection: "column", alignItems: "center" } },
+                        React.createElement("div", { style: { fontSize: 18, fontWeight: 700, color: NAVY, fontVariantNumeric: "tabular-nums" } }, fmtK(r.cfyc)),
+                        React.createElement("div", { style: { fontSize: 14.5, fontWeight: 700, color: subPct ? GOLD_TEXT : MUTE, marginBottom: 4 } }, subPct ? `หน่วย ${subPct}%` : "ไม่มีหน่วย"),
+                        React.createElement("div", { style: { position: "relative", width: "100%", height: H - 56, display: "flex", justifyContent: "center", alignItems: "flex-end" } },
+                            React.createElement("div", { style: { width: "64%", height: Math.max(bh, 3), display: "flex", flexDirection: "column-reverse", borderRadius: "8px 8px 3px 3px", overflow: "hidden", transition: "height .3s ease" } },
+                                segs.map((g) => (r[g.k] > 0 ? React.createElement("div", { key: g.k, style: { height: `${(r[g.k] / r.cfyc) * 100}%`, background: g.c } }) : null))),
+                            React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: qh, borderTop: "3px dashed #E53935" } })),
+                        React.createElement("div", { style: { fontSize: 16, fontWeight: 700, color: NAVY, marginTop: 6 } }, `ปี ${r.y}`),
+                        React.createElement("div", { style: { fontSize: 14.5, color: r.cfyc >= r.quotaY ? GREEN_DEEP : "#C0392B", fontWeight: 600 } }, `${r.lv.n} ${r.cfyc >= r.quotaY ? "✓" : "✗"}`));
+                })),
+            React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: "6px 16px", marginTop: 12 } },
+                segs.map((g, i) => React.createElement("span", { key: g.k, style: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 16, color: INK } },
+                    React.createElement("span", { style: { width: 13, height: 13, borderRadius: 3, background: g.c, display: "inline-block" } }), g.n, React.createElement("b", null, fmtK(tot[i])))),
+                React.createElement("span", { style: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 16, color: INK } },
+                    React.createElement("span", { style: { width: 18, borderTop: "3px dashed #E53935", display: "inline-block" } }), "โควต้า"))));
+}
+function PosCompare({ um, setYear, monthReport, quarters, masterYearSummary, safeCases, safePersist }) {
+    const [sel, setSel] = useState(1);
+    const list = EXEC_LEVELS.map((L) => {
+        const ov = [null, null, null, null, null]; ov[sel] = L.key;
+        return { L, r: calcUM(um, monthReport, quarters, masterYearSummary, safeCases, safePersist, ov)[sel] };
+    });
+    const ok = list.filter((x) => x.r.posOk);
+    const best = ok.length ? ok.reduce((a, b) => (b.r.total > a.r.total ? b : a)) : null;
+    const cur = um.years[sel].level;
+    const cfyc = list[0].r.cfyc;
+    const th = { padding: "8px 8px", fontSize: 15, fontWeight: 700, color: MUTE, textAlign: "right", whiteSpace: "nowrap" };
+    return React.createElement("div", { style: { background: "#fff", borderRadius: 20, border: "1px solid #D3E2EC", overflow: "hidden", marginBottom: 16, boxShadow: "0 2px 10px rgba(11,46,79,0.06)" } },
+        React.createElement("div", { style: { background: NAVY, color: "#fff", padding: "12px 18px" } },
+            React.createElement("div", { style: { fontSize: 21, fontWeight: 700 } }, "ตำแหน่งที่ได้ผลตอบแทนสูงสุด"),
+            React.createElement("div", { style: { fontSize: 15.5, color: "#CDEBFA" } }, "เทียบ 8 ตำแหน่งจากผลงานปีเดียว · ขึ้นตำแหน่งได้เมื่อ CFYC ถึงโควต้า · ใช้หน่วยใต้สังกัดตามตารางของปีนั้น")),
+        React.createElement("div", { style: { padding: "14px 16px" } },
+            React.createElement("div", { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 10 } },
+                React.createElement("span", { style: { fontSize: 17, fontWeight: 700, color: NAVY } }, "ใช้ผลงานปีที่"),
+                [0, 1, 2, 3, 4].map((i) => React.createElement("button", { key: i, onClick: () => setSel(i), style: { minWidth: 46, padding: "7px 10px", borderRadius: 10, border: sel === i ? `2px solid ${NAVY}` : "2px solid #BFDDF0", background: sel === i ? NAVY : "#fff", color: sel === i ? "#fff" : NAVY, fontWeight: 700, fontSize: 17, cursor: "pointer" } }, i + 1)),
+                React.createElement("span", { style: { fontSize: 16, color: MUTE, marginLeft: 4 } }, `CFYC ปีนี้ ${THB(cfyc)} บาท`)),
+            React.createElement("div", { style: { overflowX: "auto" } },
+                React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+                    React.createElement("thead", null, React.createElement("tr", { style: { background: "#F2F8FC" } },
+                        React.createElement("th", { style: { ...th, textAlign: "left" } }, "ตำแหน่ง"), React.createElement("th", { style: th }, "โควต้า/ปี"),
+                        React.createElement("th", { style: th }, "CFYC ถึงไหม"), React.createElement("th", { style: th }, "รายได้ผู้บริหาร"))),
+                    React.createElement("tbody", null, list.map(({ L, r }) => {
+                        const isBest = best && best.L.key === L.key;
+                        return React.createElement("tr", { key: L.key, style: { borderTop: "1px solid #E4EEF3", background: isBest ? "#EAF9DC" : undefined, opacity: r.posOk ? 1 : 0.45 } },
+                            React.createElement("td", { style: { padding: "8px", fontWeight: 700, color: NAVY, fontSize: 17, whiteSpace: "nowrap" } }, isBest ? "★ " : "", L.n,
+                                L.key === cur && React.createElement("span", { style: { fontSize: 13.5, color: SKY_DEEP, marginLeft: 6 } }, "(ในตาราง)")),
+                            React.createElement("td", { style: { ...th, color: INK, fontWeight: 500 } }, THB(r.quotaY)),
+                            React.createElement("td", { style: { ...th, color: r.posOk ? GREEN_DEEP : "#C0392B" } }, r.posOk ? `✓ ${(100 + r.over).toFixed(0)}%` : `✗ ขาด ${THB(r.quotaY - r.cfyc)}`),
+                            React.createElement("td", { style: { ...th, color: isBest ? GREEN_DEEP : INK, fontSize: 17 } }, THB(r.total)));
+                    })))),
+            best ? React.createElement("button", { onClick: () => setYear(sel, { ...um.years[sel], level: best.L.key }), disabled: cur === best.L.key,
+                style: { marginTop: 12, width: "100%", padding: 12, borderRadius: 12, border: "none", background: cur === best.L.key ? "#BFD3E1" : GREEN_DEEP, color: "#fff", fontWeight: 700, fontSize: 18, cursor: cur === best.L.key ? "default" : "pointer" } },
+                cur === best.L.key ? `✓ ปีที่ ${sel + 1} ใช้ตำแหน่ง ${best.L.n} อยู่แล้ว` : `ใช้ตำแหน่ง ${best.L.n} ในปีที่ ${sel + 1} (+${THB(best.r.total - list.find((x) => x.L.key === cur).r.total)} บาท)`)
+                : React.createElement("div", { style: { marginTop: 10, fontSize: 16, color: "#C0392B", fontWeight: 600 } }, "CFYC ปีนี้ยังไม่ถึงโควต้าของตำแหน่งใดเลย")));
 }
 function UmTab({ um, setUm, monthReport, quarters, masterYearSummary, safeCases, safePersist, shareBar }) {
     const upd = (k, v) => setUm((p) => ({ ...p, [k]: v }));
@@ -1003,6 +1075,13 @@ function UmTab({ um, setUm, monthReport, quarters, masterYearSummary, safeCases,
     const maxAgents = Math.max(30, um.agents || 0), maxNew = Math.max(10, um.newPerYear || 0);
     return React.createElement(React.Fragment, null,
         React.createElement("div", { className: "dash" },
+            React.createElement("div", { style: CARD_SUM },
+                React.createElement("div", { style: { fontSize: 18, color: "#CDEBFA", fontWeight: 700 } }, "รายได้ผู้บริหารรวม 5 ปี (8 ประเภท)"),
+                React.createElement("div", { style: { fontSize: 46, fontWeight: 700, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" } }, THB(tot),
+                    React.createElement("span", { style: { fontSize: 20, color: "#CDEBFA", marginLeft: 6 } }, "บาท")),
+                React.createElement("div", { style: { height: 1, background: "rgba(255,255,255,0.18)", margin: "12px 0" } }),
+                React.createElement("div", { style: { fontSize: 16.5, color: "#CDEBFA", fontWeight: 700, marginBottom: 6 } }, "รายได้ทั้งปี แยกตามประเภท (หน่วย: 1,000 บาท)"),
+                React.createElement(YearBars, { data, series })),
             React.createElement("div", { style: CARD_CTRL },
                 React.createElement("div", { style: { fontSize: 21, fontWeight: 700, color: NAVY } }, "ทีมตัวแทนตรง"),
                 React.createElement("div", { style: { fontSize: 15.5, color: MUTE, marginTop: 2 } }, `ทุกคนทำผลงานเท่าแทปตัวแทน · ${safeCases} ราย/เดือน · อัตราคงอยู่ ${safePersist}%`),
@@ -1012,19 +1091,14 @@ function UmTab({ um, setUm, monthReport, quarters, masterYearSummary, safeCases,
                 lbl("ผู้บริหารขายเองด้วยไหม (FYC ขายเองนับเข้า CFYC)"),
                 grid2([chip("ขายเองด้วย", um.includeOwn !== false, () => upd("includeOwn", true)), chip("บริหารอย่างเดียว", um.includeOwn === false, () => upd("includeOwn", false))]),
                 lbl("ทีมตั้งต้นเป็นตัวแทนใหม่ที่สร้างเอง"),
-                grid2([chip("ใช่ (ได้ค่าเสริมมือปีแรก)", !!um.newFromStart, () => upd("newFromStart", true)), chip("ไม่ใช่", !um.newFromStart, () => upd("newFromStart", false))])),
-            React.createElement("div", { style: CARD_SUM },
-                React.createElement("div", { style: { fontSize: 18, color: "#CDEBFA", fontWeight: 700 } }, "รายได้ผู้บริหารรวม 5 ปี (8 ประเภท)"),
-                React.createElement("div", { style: { fontSize: 46, fontWeight: 700, lineHeight: 1.15, fontVariantNumeric: "tabular-nums" } }, THB(tot),
-                    React.createElement("span", { style: { fontSize: 20, color: "#CDEBFA", marginLeft: 6 } }, "บาท")),
-                React.createElement("div", { style: { height: 1, background: "rgba(255,255,255,0.18)", margin: "12px 0" } }),
-                React.createElement("div", { style: { fontSize: 16.5, color: "#CDEBFA", fontWeight: 700, marginBottom: 6 } }, "รายได้ทั้งปี แยกตามประเภท (หน่วย: 1,000 บาท)"),
-                React.createElement(YearBars, { data, series }))),
+                grid2([chip("ใช่ (ได้ค่าเสริมมือปีแรก)", !!um.newFromStart, () => upd("newFromStart", true)), chip("ไม่ใช่", !um.newFromStart, () => upd("newFromStart", false))]))),
         shareBar(() => ({ kind: "um", um, rows, tot, series, data })),
         React.createElement("div", { style: { ...CARD_CTRL, marginBottom: 16 } },
             React.createElement("div", { style: { fontSize: 21, fontWeight: 700, color: NAVY } }, "ตำแหน่งและหน่วยใต้สังกัด รายปี"),
             React.createElement("div", { style: { fontSize: 15.5, color: MUTE, margin: "2px 0 10px" } }, "เปลี่ยนตำแหน่งแล้วหน่วยใต้สังกัดจะตั้งตามโครงสร้างขั้นต่ำในตาราง · CFYC ตั้งต้นเท่าโควต้าของแต่ละระดับ · นับเข้า CFYC ของเรา 30%"),
             React.createElement(UmPositionTable, { years: um.years, setYear })),
+        React.createElement(CfycChart, { rows }),
+        React.createElement(PosCompare, { um, setYear, monthReport, quarters, masterYearSummary, safeCases, safePersist }),
         React.createElement(Detail, { title: "ผลประโยชน์ผู้บริหาร แยกรายปี", sub: "แตะปีเพื่อดูทุกรายการ · แตะ \"ดูที่มา\" เพื่อดูวิธีคิดของแต่ละตัวเลข" },
             rows.map((r) => React.createElement(UmYearCard, { key: r.y, r }))),
         React.createElement("div", { style: { fontSize: 15, color: MUTE, lineHeight: 1.6, padding: "4px 6px 8px" } },
@@ -1385,7 +1459,7 @@ function computeAgent({ safePremium, modeKey, safeRates, safeCases, safePersist,
     }, { byYear: [0, 0, 0, 0, 0], commissionSubtotal: 0, quarterlyBonus: 0, annualBonus: 0, collectBonus: 0, careerBenefit: 0, qualReward: 0, joining: 0, grandTotal: 0 });
     return { keepRatio, yearPersist, annualPremiumPerCase, perCase, monthReport, totalCommission5y, totalPremium5y, yearGroups, yearlyStacked, chunkSizeMonths, totalPeriodsAll, periodTrend, quarters, annualBonusByYear, safeTenureStart, careerByYear, masterYearSummary, grand5y, careerY5, promo };
 }
-const APP_VERSION = "2.1 · 02/10/2026";
+const APP_VERSION = "2.3 · 02/10/2026";
 function CommissionPlanner() {
     const [modeKey, setModeKey] = useState(DEFAULTS.modeKey);
     const [premiumPerInstallment, setPremiumPerInstallment] = useState(DEFAULTS.premiumPerInstallment);
@@ -1502,12 +1576,12 @@ function CommissionPlanner() {
         title: "แผนรายได้ผู้บริหารตัวแทน (UM) 5 ปี",
         plan: [`ทีมตัวแทนตรงเริ่ม ${o.um.agents || 0} คน + ตัวแทนใหม่ ${o.um.newPerYear || 0} คน/ปี · ทุกคนขาย ${safeCases} ราย/เดือน`, `ตำแหน่ง: ${o.rows.map((r) => `ปี ${r.y} ${r.lv.n}`).join(" · ")}`],
         totalLabel: "รายได้ผู้บริหารรวม 5 ปี (8 ประเภท)", total: o.tot, data: o.data, series: o.series,
-        highlights: [`ปีที่ 5 ทีมมีตัวแทนตรง ${o.rows[4].agentsCount} คน · หน่วยใต้สังกัด ${o.rows[4].subUnits} หน่วย`, `รายได้ผู้บริหารปีที่ 5: ${THB(o.rows[4].total)} บาท`],
+        highlights: [`ปีที่ 5 ทีมมีตัวแทนตรง ${o.rows[4].agentsCount} คน · หน่วยใต้สังกัด ${o.rows[4].subUnits} หน่วย`],
     } : {
         title: "แผนรายได้ตัวแทน 5 ปี",
         plan: [`ขาย ${safeCases} ราย/เดือน · เบี้ย ${THB(annualPremiumPerCase)} บาท/ปี/ราย (ชำระ${modeLabel})`, `อัตราคงอยู่ ${safePersist}% · รวมคอมฯ โบนัส และ CAREER`],
         totalLabel: "รายได้รวม 5 ปี", total: grand5y.grandTotal, data: o.data, series: o.series,
-        highlights: [promo.year ? `✓ เลื่อนเป็นผู้จัดการหน่วย (UM) ได้ในปีที่ ${promo.year} (FYC ${THB(promo.fyc)})` : `ทำ FYC ให้ถึง 204,000 บาท/ปี เพื่อเลื่อนเป็น UM`, `ปีที่ 5 รายได้ทั้งปี ${THB(masterYearSummary[4].grandTotal)} บาท`],
+        highlights: [promo.year ? `✓ เลื่อนเป็นผู้จัดการหน่วย (UM) ได้ในปีที่ ${promo.year} (FYC ${THB(promo.fyc)})` : `ทำ FYC ให้ถึง 204,000 บาท/ปี เพื่อเลื่อนเป็น UM`],
     };
     const agentChart = {
         series: [
