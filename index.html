@@ -568,12 +568,14 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, careerPrev, def
         const coll = ms.reduce((s, r) => s + (r.collect || 0), 0);
         const car = ms.reduce((s, r) => s + (r.career || 0), 0);
         const yearEnd = qi === 3 ? ab.net + (ab.qualReward || 0) + careerLate : 0;
-        const join = (ab.joinQ && ab.joinQ[qi]) || 0;
-        return { q, ms, comm, coll, car, yearEnd, join, total: comm + coll + car + q.bonus + yearEnd + join };
+        const join = ms.reduce((s, r) => s + (r.join || 0), 0);
+        const monthly = comm + coll + car + join;
+        return { q, ms, comm, coll, car, yearEnd, join, monthly, total: monthly + q.bonus + yearEnd };
     });
     const yearTotal = qData.reduce((s, x) => s + x.total, 0);
-    const hasColl = rows.some((r) => r.collect > 0), hasCar = rows.some((r) => r.career > 0);
-    const extraCols = (hasColl ? 1 : 0) + (hasCar ? 1 : 0);
+    const hasColl = rows.some((r) => r.collect > 0), hasCar = rows.some((r) => r.career > 0), hasJoin = rows.some((r) => r.join > 0);
+    const extraCols = (hasColl ? 1 : 0) + (hasCar ? 1 : 0) + (hasJoin ? 1 : 0);
+    const mTotal = (r) => r.total + (r.collect || 0) + (r.career || 0) + (r.join || 0);
     const nCols = 4 + extraCols;
     const pct = (r) => `${+(r * 100).toFixed(2)}%`;
     // ที่มาของตัวเลขรายเดือน
@@ -585,6 +587,11 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, careerPrev, def
             out.push(`${lbl}: ยอดขาย ${p.n} เดือน × ${cases} ราย × เบี้ย ${THB(p.collected)}${adv} × ${pct(p.rate)}${p.py > 1 ? ` × คงอยู่ ${persist}%` : ""} = ${THB(p.v)}`);
         });
         if (r.collect > 0) out.push(`รางวัลเก็บเบี้ยรายปี: คอมฯ ปีแรกเดือนนี้ ${THB(r.byYear[0])} × 10% = ${THB(r.collect)}`);
+        if (r.join > 0 && ab.joinInfo) {
+            const J = ab.joinInfo, m = J.ms[mIdx];
+            if (J.paidArr[mIdx]) out.push(`Joining Bonus เดือนที่ ${mIdx + 1}: ${m.c} ราย · FYC ${THB(m.f)} (เกณฑ์ 2 ราย + FYC 6,500) → ผ่าน 2,200`);
+            if (mIdx === 3 && J.top > 0) out.push(`Joining Bonus เติมยอด: สะสม 4 เดือน ${J.cc} ราย / FYC ${THB(J.cf)} → ขั้น ${THB(J.tb)} − จ่ายแล้ว ${THB(J.tb - J.top)} = เติม ${THB(J.top)}`);
+        }
         if (r.career > 0 && careerPrev) out.push(`CAREER จากผลงานปีที่ ${calYear - 1}: ${THB(careerPrev.benefit)} × ${mIdx === 3 ? "4/12 (ม.ค.–เม.ย.)" : "1/12"} = ${THB(r.career)}`);
         if (!out.length) out.push("ยังไม่มีรายได้ในเดือนนี้");
         return out;
@@ -641,6 +648,7 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, careerPrev, def
                             React.createElement("th", { style: { ...td, fontWeight: 700 } }, "คอมฯ ต่ออายุ"),
                             hasColl && React.createElement("th", { style: { ...td, fontWeight: 700 } }, "เก็บเบี้ยรายปี"),
                             hasCar && React.createElement("th", { style: { ...td, fontWeight: 700 } }, "CAREER"),
+                            hasJoin && React.createElement("th", { style: { ...td, fontWeight: 700 } }, "Joining"),
                             React.createElement("th", { style: { ...td, fontWeight: 800, color: INK } }, "รวม"))),
                         React.createElement("tbody", null,
                             x.ms.map((r, mi) => {
@@ -653,15 +661,13 @@ function YearQuarterBlock({ calYear, rows, quarters, ab, career, careerPrev, def
                                         React.createElement("td", { style: { ...td, color: ren > 0 ? INK : "#4E6B84" } }, ren > 0 ? THB(ren) : "-"),
                                         hasColl && React.createElement("td", { style: td }, r.collect > 0 ? THB(r.collect) : "-"),
                                         hasCar && React.createElement("td", { style: { ...td, color: r.career > 0 ? GREEN_DEEP : "#4E6B84" } }, r.career > 0 ? THB(r.career) : "-"),
-                                        React.createElement("td", { style: { ...td, fontWeight: 800 } }, THB(r.total + (r.collect || 0) + (r.career || 0)))),
+                                        hasJoin && React.createElement("td", { style: { ...td, color: r.join > 0 ? GREEN_DEEP : "#4E6B84" } }, r.join > 0 ? THB(r.join) : "-"),
+                                        React.createElement("td", { style: { ...td, fontWeight: 800 } }, THB(mTotal(r)))),
                                     isOpen && React.createElement("tr", null, React.createElement("td", { colSpan: nCols, style: { padding: "4px 8px 8px", background: "#F2F8FC" } },
                                         monthLines(r, key).map((t, i) => React.createElement("div", { key: i, style: { fontSize: 15, color: MUTE, lineHeight: 1.5 } }, "• " + t)))));
                             }),
-                            line("รวมค่าคอมมิชชันไตรมาสนี้", x.comm, { bg: PAPER, color: NAVY, bold: true }),
+                            line("รวมรายได้รายเดือนไตรมาสนี้", x.monthly, { bg: PAPER, color: NAVY, bold: true }),
                             line("โบนัสรายไตรมาส", x.q.bonus, { note: qNote(x.q), noteColor: x.q.qualifies ? GREEN_DEEP : "#C0392B" }),
-                            x.join > 0 && line("Joining Bonus", x.join, { note: joinNote(qi), noteColor: GREEN_DEEP }),
-                            x.coll > 0 && line("รางวัลเก็บเบี้ยรายปี", x.coll, { note: `10% ของคอมฯ ปีแรก ${THB(x.coll * 10)} · ได้ในเดือนที่ขาย`, noteColor: GREEN_DEEP }),
-                            x.car > 0 && careerPrev && line("ผลประโยชน์ชั้นอาชีพ (CAREER)", x.car, { note: [careerNote(careerPrev), qi === 1 ? "จ่าย เม.ย. 4/12 (ม.ค.–เม.ย.) + พ.ค.–มิ.ย. เดือนละ 1/12" : "จ่ายเดือนละ 1/12 จนครบ ธ.ค."], noteColor: GREEN_DEEP }),
                             qi === 3 && line("โบนัสรายปี (สุทธิ)", ab.net, { note: annNote(), noteColor: ab.qualifies ? GREEN_DEEP : "#C0392B" }),
                             qi === 3 && line("เงินรางวัลคุณวุฒิไตรมาส", ab.qualReward || 0, { note: qualNote(), noteColor: ab.qualLevel ? GREEN_DEEP : MUTE }),
                             qi === 3 && careerLate > 0 && line("※ ผลประโยชน์ชั้นอาชีพ (CAREER) จากผลงานปีที่ 5", careerLate, { note: [careerNote(career), "จ่ายจริงปีถัดไป (เริ่มเมษายน) · รวมไว้ในปีที่ 5 เพื่อให้เห็นผลตอบแทนของปีนี้"], noteColor: GOLD_TEXT }),
@@ -1327,7 +1333,10 @@ function computeAgent({ safePremium, modeKey, safeRates, safeCases, safePersist,
     });
     // รางวัลเก็บเบี้ยรายปี 10% ของคอมฯ ปีแรก จ่ายในเดือนที่ขาย (เฉพาะชำระแบบรายปี)
     // CAREER: ยอดจากผลงานปีใด จ่ายจริงปีถัดไป เม.ย. 4/12 (ม.ค.–เม.ย.) แล้ว พ.ค.–ธ.ค. เดือนละ 1/12 ครบ 12 เดือน · ปีที่ 5 รวมไว้ในปีที่ 5 (※ จ่ายจริงปีถัดไป)
-    monthReport.forEach((r) => { r.collect = modeKey === "annual" ? r.byYear[0] * 0.1 : 0; r.career = 0; });
+    monthReport.forEach((r) => { r.collect = modeKey === "annual" ? r.byYear[0] * 0.1 : 0; r.career = 0; r.join = 0; });
+    // Joining Bonus จ่ายรายเดือน: เดือนที่ 1-4 ผ่านเกณฑ์ได้ 2,200 · เดือนที่ 4 รวมยอดเติมตามผลงานสะสม
+    const J0 = annualBonusByYear[0].joinInfo;
+    if (J0) { for (let i = 0; i < 4; i++) monthReport[i].join = J0.paidArr[i] + (i === 3 ? J0.top : 0); }
     for (let i = 0; i < 4; i++) {
         const b = careerByYear[i].benefit, base = 12 * (i + 1);
         if (!b) continue;
